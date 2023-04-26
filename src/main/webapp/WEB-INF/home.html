@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+  <p>Welcome home my boi</p>
+  <div th:switch="${products.isEmpty()}">
+      <p th:case="true">There are no products to be shown in the menu... please come back later</p>
+
+      <div th:case="false">
+          <ul>
+              <li th:each="prod : ${products}" th:class="Product">
+                  <p th:text="${prod.codice}"></p>
+                  <p th:text="${prod.nome}"></p>
+              </li>
+          </ul>
+      </div>
+  </div>
+
+
+
+</body>
+</html>
