@@ -29,19 +29,19 @@ public class ProductDAO {
         statement.setString(1, email);
         ResultSet resultSet = statement.executeQuery();
 
-        if(!resultSet.isBeforeFirst()){
-            return lasts;
-        }
+        if(resultSet.isBeforeFirst()) {
 
-        while (resultSet.next()) {
-            Product product = new Product(resultSet.getInt("Codice"),
-                    resultSet.getString("Nome"),
-                    resultSet.getString("Descrizione"),
-                    resultSet.getString("Foto"),
-                    resultSet.getString("Categoria"));
-            lasts.add(product);
-        }
 
+            while (resultSet.next()) {
+                Product product = new Product(resultSet.getInt("Codice"),
+                        resultSet.getString("Nome"),
+                        resultSet.getString("Descrizione"),
+                        resultSet.getString("Foto"),
+                        resultSet.getString("Categoria"));
+                lasts.add(product);
+            }
+
+        }
 
         if(lasts.size() < 5){
 

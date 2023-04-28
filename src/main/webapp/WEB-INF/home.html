@@ -1,25 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Home</title>
-</head>
-<body>
-  <p>Welcome home my boi</p>
-  <div th:switch="${products.isEmpty()}">
-      <p th:case="true">There are no products to be shown in the menu... please come back later</p>
 
-      <div th:case="false">
-          <ul>
-              <li th:each="prod : ${products}" th:class="Product">
-                  <p th:text="${prod.codice}"></p>
-                  <p th:text="${prod.nome}"></p>
-              </li>
-          </ul>
-      </div>
-  </div>
+<html xmlns:th="http://www.thymeleaf.org">
 
+    <head>
+        <meta charset="UTF-8">
+        <title>Home</title>
 
+        <style>
+            
+            ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                background-color: #333;
+            }
 
-</body>
+            li {
+                float: left;
+            }
+
+            li input {
+                float: right !important;
+                display: block;
+                text-align: left;
+                margin-top: 7.5%;
+            }
+
+            li a {
+                display: block;
+                color: white;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+            }
+
+            /* Change the link color to #111 (black) on hover */
+            li a:hover {
+                background-color: #111;
+            }
+        </style>
+    </head>
+    <body>
+    
+        <div class="menu">
+            <div th:switch="${products.isEmpty()}">
+                <ul>
+                    <li><a>Home</a></li>
+                    <li><a>Carrello</a></li>
+                    <li><a>Ordini</a></li>
+                    <li><a th:case="true">No Products</a></li>
+
+                    <div th:case="false">
+                        <li th:each="prod : ${products}" th:class="Product">
+                            <a th:href="@{'/product?codice=' + ${prod.codice}}" th:text="${prod.Codice} + '. ' + ${prod.Nome}" href="/product?codice=1">1. Primo Prodotto</a>
+                        </li>
+                    </div>
+
+                    <li>
+                        <form action="#" th:action="@{/risultati}" method="GET">
+                            <input type="text" placeholder="Cerca..." name="queryString" required />
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+    </body>
 </html>
