@@ -3,6 +3,7 @@ package it.polimi.tiw.tiw_html_pure.Controller;
 import it.polimi.tiw.tiw_html_pure.Bean.User;
 import it.polimi.tiw.tiw_html_pure.DAO.UserDAO;
 import it.polimi.tiw.tiw_html_pure.Utilities.ConnectionFactory;
+import it.polimi.tiw.tiw_html_pure.Utilities.TemplateFactory;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,19 +26,11 @@ public class Login extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
     private JakartaServletWebApplication application;
-
     private Connection connection;
 
     public void init() throws UnavailableException {
         this.application = JakartaServletWebApplication.buildApplication(getServletContext());
-        WebApplicationTemplateResolver templateResolver = new WebApplicationTemplateResolver(this.application);
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setPrefix("WEB-INF/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setCharacterEncoding("UTF-8");
-        this.templateEngine = new TemplateEngine();
-        this.templateEngine.setTemplateResolver(templateResolver);
-
+        this.templateEngine = TemplateFactory.getTemplateEngine(this.application);
         this.connection = ConnectionFactory.getConnection(getServletContext());
     }
 
