@@ -13,4 +13,9 @@ public record Product (int codice, String nome, String descrizione, String pathF
         Product p = (Product) o;
         return this.codice == p.codice;
     }
+
+    @Override
+    public int hashCode(){
+        return codice;
+    }
 }

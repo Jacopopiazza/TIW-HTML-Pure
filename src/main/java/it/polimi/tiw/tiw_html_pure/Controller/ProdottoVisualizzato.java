@@ -15,19 +15,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
 import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Queue;
 
-@WebServlet(name = "Home", value="/home")
-public class Home extends HttpServlet {
+@WebServlet(name="ProdottoVisualizzato", value="/visualizza")
+public class ProdottoVisualizzato extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
@@ -40,33 +36,54 @@ public class Home extends HttpServlet {
         this.connection = ConnectionFactory.getConnection(getServletContext());
     }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String codiceVisualizzato = req.getParameter("visualizzato");
+        String[] aperti = req.getParameterValues("aperto");
+        String queryString = req.getParameter("queryString");
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        final IWebExchange webExchange = this.application.buildExchange(request, response);
-        final WebContext ctx = new WebContext(webExchange, request.getLocale());
-
-        HttpSession session = request.getSession(false);
-        ProductDAO productDAO = new ProductDAO(connection);
-
-        User user = (User)session.getAttribute("user");
-        List<Product> menuProducts;
-        try {
-            menuProducts = productDAO.getMenuProductsForUser( user.email() );
-        }catch (SQLException e){
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while retriving products for the menu");
+        if(codiceVisualizzato == null || codiceVisualizzato.isEmpty() || queryString == null || queryString.isEmpty()){
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "codiceVisualizzato cannot be empty");
             return;
         }
 
+        int codiceProdottoVisualizzato;
 
+        try {
+            codiceProdottoVisualizzato = Integer.parseInt(codiceVisualizzato);
+            if(aperti != null){
+                for(String s : aperti){
+                    Integer.parseInt(s);
+                }
+            }
+        } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad parameter in report creation");
+            return;
+        }
 
-        ctx.setVariable("products", menuProducts);
-        this.templateEngine.process("home",ctx, response.getWriter());
-    }
+        HttpSession session = req.getSession(false);
+        User user = (User)session.getAttribute("user");
+        ProductDAO productDAO = new ProductDAO(connection);
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        //DO NOTHING
+        try{
+            productDAO.prodottoVisualizzato(user, codiceProdottoVisualizzato);
+        }catch(SQLException ex){
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while setting product viewed");
+            return;
+        }
+
+        String path = getServletContext().getContextPath() + "/risultati";
+
+        path += "?queryString=" + queryString;
+
+        path += "&aperto=" + codiceProdottoVisualizzato;
+
+        if(aperti != null)
+            for(String s : aperti){
+                path += "&aperto=" + s;
+            }
+
+        resp.sendRedirect(path);
     }
 
     /**
@@ -80,5 +97,4 @@ public class Home extends HttpServlet {
         } catch (SQLException ignored) {
         }
     }
-
 }

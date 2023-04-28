@@ -5,67 +5,15 @@
     <head>
         <meta charset="UTF-8">
         <title>Home</title>
+        <link rel="stylesheet" type="text/css" media="all"
+              href="../css/stylesheet.css" th:href="@{/css/stylesheet.css}" />
 
-        <style>
-            
-            ul {
-                list-style-type: none;
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-                background-color: #333;
-            }
-
-            li {
-                float: left;
-            }
-
-            li input {
-                float: right !important;
-                display: block;
-                text-align: left;
-                margin-top: 7.5%;
-            }
-
-            li a {
-                display: block;
-                color: white;
-                text-align: center;
-                padding: 14px 16px;
-                text-decoration: none;
-            }
-
-            /* Change the link color to #111 (black) on hover */
-            li a:hover {
-                background-color: #111;
-            }
-        </style>
     </head>
     <body>
-    
-        <div class="menu">
-            <div th:switch="${products.isEmpty()}">
-                <ul>
-                    <li><a>Home</a></li>
-                    <li><a>Carrello</a></li>
-                    <li><a>Ordini</a></li>
-                    <li><a th:case="true">No Products</a></li>
 
-                    <div th:case="false">
-                        <li th:each="prod : ${products}" th:class="Product">
-                            <a th:href="@{'/product?codice=' + ${prod.codice}}" th:text="${prod.Codice} + '. ' + ${prod.Nome}" href="/product?codice=1">1. Primo Prodotto</a>
-                        </li>
-                    </div>
+    <div th:insert="@{fragments/fragments.html} :: navbar (products = ${products})"></div>
 
-                    <li>
-                        <form action="#" th:action="@{/risultati}" method="GET">
-                            <input type="text" placeholder="Cerca..." name="queryString" required />
-                        </form>
-                    </li>
-                </ul>
-            </div>
 
-        </div>
 
     </body>
 </html>

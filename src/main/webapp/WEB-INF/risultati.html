@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Risultati</title>
+        <link rel="stylesheet" type="text/css" media="all"
+              href="../css/stylesheet.css" th:href="@{/css/stylesheet.css}" />
+
+    </head>
+    <body>
+
+        <div th:insert="@{fragments/fragments.html} :: navbar (products = ${products})"></div>
+
+        <div>
+            <p th:if="${risultati.isEmpty()}">Nessun risultato corrisponde alla ricerca...</p>
+
+            <div class="row" th:if="${!risultati.isEmpty()}" th:each=" risultato : ${risultati.keySet()}" th:class="Product">
+                <div class="column">
+
+                    <form th:if="${!codiciAperti.contains(risultato.codice)}" th:action="@{/visualizza}" method="POST">
+                        <input type="hidden" name="queryString" th:value="${queryString}" />
+                        <input th:each=" codice : ${codiciAperti}" type="hidden" name="aperto" th:value="${codice}"/>
+                        <input type="hidden" name="visualizzato" th:value="${risultato.codice}" />
+                        <input type="submit" th:value="${risultato.codice + ' - ' + risultato.nome + ': ' + risultati.get(risultato)}">
+                    </form>
+
+                    <form th:if="${codiciAperti.contains(risultato.codice)}" th:action="@{/risultati}" method="GET">
+                        <input type="hidden" name="queryString" th:value="${queryString}" />
+                        <input th:each=" codice : ${codiciAperti}" th:if="${codice != risultato.codice}" type="hidden" name="aperto" th:value="${codice}"/>
+                        <input type="submit" th:value="${risultato.codice + ' - ' + risultato.nome + ': ' + risultati.get(risultato)}">
+                    </form>
+
+                    <p th:if="${codiciAperti.contains(risultato.codice)}" th:text="${risultato.descrizione()}"></p>
+                </div>
+            </div>
+
+            <!--<table th:if="${!risultati.isEmpty()}">
+                <thead>
+                    <tr>
+                        <th>Codice</th>
+                        <th>Nome</th>
+                        <th>Descrizione</th>
+                        <th>Immagine</th>
+                        <th>Prezzo Minimo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each=" risultato : ${risultati.keySet()}" th:class="Product">
+                        <td >1</td>
+                        <td th:text="${risultato.nome}">Nome</td>
+                        <td th:text="">150.00</td>
+                    </tr>
+                </tbody>
+            </table>-->
+
+        </div>
+    </body>
+</html>

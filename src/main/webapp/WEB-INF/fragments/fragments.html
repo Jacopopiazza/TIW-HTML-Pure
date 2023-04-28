@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <body>
+        <!--/*  declare parameterized fragment called "list" */-->
+        <div th:fragment="navbar(products)">
+            <div class="navbar">
+                <a th:href="@{/home}">Home</a>
+                <a th:href="@{/ordini}">Ordini</a>
+                <a th:href="@{/carrello}">Carrello</a>
+
+                <a th:if="${products.isEmpty()}">No products in DB</a>
+                <a class="no-hover" th:if="${!products.isEmpty()}">Hai visto:</a>
+                <a th:each="prod : ${products}" th:class="Product" th:if="${!products.isEmpty()}" th:href="@{'/product?codice=' + ${prod.codice}}" th:text="${prod.Codice} + '. ' + ${prod.Nome}" href="/product?codice=1">1. Primo Prodotto</a>
+
+
+
+                <form action="#" th:action="@{/risultati}" method="GET">
+                    <input type="text" placeholder="Cerca..." name="queryString" required />
+                </form>
+
+
+            </div>
+        </div>
+
+    </body>
+
+</html>
