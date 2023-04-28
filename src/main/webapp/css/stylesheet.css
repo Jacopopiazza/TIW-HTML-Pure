@@ -59,3 +59,11 @@ tr:nth-child(even) {
     clear: both;
 }
 
+.column input[type="submit"], .column input[type="submit"]:focus,
+.column input[type="submit"]:active {
+    border: none;
+    background:none;
+    outline: none;
+    cursor: pointer;
+    font-size: medium;
+}

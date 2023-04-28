@@ -16,6 +16,7 @@
         <div>
             <p th:if="${risultati.isEmpty()}">Nessun risultato corrisponde alla ricerca...</p>
 
+            <h2 th:if="${!risultati.isEmpty()}">Risultati ricerca:</h2>
             <div class="row" th:if="${!risultati.isEmpty()}" th:each=" risultato : ${risultati.keySet()}" th:class="Product">
                 <div class="column">
 
