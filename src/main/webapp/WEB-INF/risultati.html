@@ -17,45 +17,24 @@
             <p th:if="${risultati.isEmpty()}">Nessun risultato corrisponde alla ricerca...</p>
 
             <h2 th:if="${!risultati.isEmpty()}">Risultati ricerca:</h2>
-            <div class="row" th:if="${!risultati.isEmpty()}" th:each=" risultato : ${risultati.keySet()}" th:class="Product">
-                <div class="column">
-
-                    <form th:if="${!codiciAperti.contains(risultato.codice)}" th:action="@{/visualizza}" method="POST">
-                        <input type="hidden" name="queryString" th:value="${queryString}" />
-                        <input th:each=" codice : ${codiciAperti}" type="hidden" name="aperto" th:value="${codice}"/>
-                        <input type="hidden" name="visualizzato" th:value="${risultato.codice}" />
-                        <input type="submit" th:value="${risultato.codice + ' - ' + risultato.nome + ': ' + risultati.get(risultato)}">
-                    </form>
-
-                    <form th:if="${codiciAperti.contains(risultato.codice)}" th:action="@{/risultati}" method="GET">
-                        <input type="hidden" name="queryString" th:value="${queryString}" />
-                        <input th:each=" codice : ${codiciAperti}" th:if="${codice != risultato.codice}" type="hidden" name="aperto" th:value="${codice}"/>
-                        <input type="submit" th:value="${risultato.codice + ' - ' + risultato.nome + ': ' + risultati.get(risultato)}">
-                    </form>
-
-                    <p th:if="${codiciAperti.contains(risultato.codice)}" th:text="${risultato.descrizione()}"></p>
-                </div>
+            <div class="risultati">
+                <ul class="listview">
+                    <li class="listview-row" th:if="${!risultati.isEmpty()}" th:each=" risultato : ${risultati.keySet()}">
+                        <form th:action="@{${codiciAperti.contains(risultato.codice) ? '/risultati' : '/visualizza'}}" th:method="${codiciAperti.contains(risultato.codice) ? 'GET' : 'POST'}">
+                            <input type="hidden" name="queryString" th:value="${queryString}" />
+                            <input th:each=" codice : ${codiciAperti}" th:if="${!codice.equals(risultato.codice)}" type="hidden" name="aperto" th:value="${codice}"/>
+                            <input type="hidden" name="visualizzato" th:value="${risultato.codice}" />
+                            <input type="submit" th:value="${risultato.codice + ' - ' + risultato.nome + ': ' + risultati.get(risultato) + ' €'}" value="123 - Nome prodotto: 12.00 €">
+                        </form>
+                        <div th:if="${codiciAperti.contains(risultato.codice)}">
+                            <p th:text="${risultato.descrizione()}"></p>
+                        </div>
+                    </li>
+                </ul>
             </div>
 
-            <!--<table th:if="${!risultati.isEmpty()}">
-                <thead>
-                    <tr>
-                        <th>Codice</th>
-                        <th>Nome</th>
-                        <th>Descrizione</th>
-                        <th>Immagine</th>
-                        <th>Prezzo Minimo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each=" risultato : ${risultati.keySet()}" th:class="Product">
-                        <td >1</td>
-                        <td th:text="${risultato.nome}">Nome</td>
-                        <td th:text="">150.00</td>
-                    </tr>
-                </tbody>
-            </table>-->
-
         </div>
+
+
     </body>
 </html>

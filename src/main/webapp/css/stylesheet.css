@@ -59,11 +59,24 @@ tr:nth-child(even) {
     clear: both;
 }
 
-.column input[type="submit"], .column input[type="submit"]:focus,
-.column input[type="submit"]:active {
+.listview-row input[type="submit"], .listview-row input[type="submit"]:focus,
+.listview-row input[type="submit"]:active {
     border: none;
     background:none;
     outline: none;
     cursor: pointer;
     font-size: medium;
+}
+
+
+.listview {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+.listview-row {
+    padding: 14px 16px;
+    margin: 5px 0px;
+    border: 1px solid black;
 }

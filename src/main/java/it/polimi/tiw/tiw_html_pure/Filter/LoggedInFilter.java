@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebFilter({"/home", "/risultati", "/visualizza", "/ordini", "/carrello"})
+@WebFilter({"/home", "/risultati", "/visualizza", "/ordini", "/carrello", "/image"})
 public class LoggedInFilter implements Filter {
 
     /**

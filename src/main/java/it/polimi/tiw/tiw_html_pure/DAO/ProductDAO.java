@@ -58,6 +58,20 @@ public class ProductDAO {
         return lasts;
     }
 
+    public String getFotoPathFromCodiceProdotto(int codiceProdotto) throws SQLException{
+        String query = "SELECT Foto FROM prodotto WHERE Codice = ?";
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setInt(1, codiceProdotto);
+        ResultSet resultSet = statement.executeQuery();
+
+        if(!resultSet.isBeforeFirst()){
+            return null;
+        }
+
+        resultSet.next();
+        return resultSet.getString("Foto");
+    }
+
     public Queue<Product> getFiveRandomProducts() throws SQLException{
         String query = "SELECT * FROM prodotto ORDER BY RAND() LIMIT 5";
         Queue<Product> lasts = new LinkedList<>();
