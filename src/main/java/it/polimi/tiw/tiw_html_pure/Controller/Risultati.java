@@ -1,8 +1,10 @@
 package it.polimi.tiw.tiw_html_pure.Controller;
 
 import it.polimi.tiw.tiw_html_pure.Bean.Product;
+import it.polimi.tiw.tiw_html_pure.Bean.Supplier;
 import it.polimi.tiw.tiw_html_pure.Bean.User;
 import it.polimi.tiw.tiw_html_pure.DAO.ProductDAO;
+import it.polimi.tiw.tiw_html_pure.DAO.SupplierDAO;
 import it.polimi.tiw.tiw_html_pure.Utilities.ConnectionFactory;
 import it.polimi.tiw.tiw_html_pure.Utilities.TemplateFactory;
 import jakarta.servlet.ServletException;
@@ -48,17 +50,22 @@ public class Risultati extends HttpServlet {
             return;
         }
 
+        SupplierDAO supplierDAO = new SupplierDAO(connection);
+
         String[] aperti = request.getParameterValues("aperto");
-        List<Integer> codiciAperti = new ArrayList<>();
-        if(aperti != null){
+        Map<Integer, Map<Supplier, Double>> prodottiAperti = new HashMap<>();
+         if(aperti != null){
             for(String s : aperti)
                 try{
-                    Integer.parseInt(s);
+                    int codice = Integer.parseInt(s);
+                    prodottiAperti.put(codice, supplierDAO.getSuppliersAndPricesForProduct(codice));
                 }catch (NumberFormatException ex){
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter");
                     return;
+                }catch(SQLException ex){
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while retriving suppliers for open products");
+                    return;
                 }
-            codiciAperti = Arrays.stream(aperti).mapToInt(Integer::parseInt).boxed().toList();
         }
 
 
@@ -91,14 +98,15 @@ public class Risultati extends HttpServlet {
             return;
         }
 
-        if(!risultati.keySet().stream().map(x -> x.codice()).toList().containsAll(codiciAperti)){
+        if(!risultati.keySet().stream().map(x -> x.codice()).toList().containsAll(prodottiAperti.keySet())){
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid opened product");
             return;
         }
 
         ctx.setVariable("risultati", risultati);
         ctx.setVariable("products", menuProducts);
-        ctx.setVariable("codiciAperti", codiciAperti);
+        //ctx.setVariable("codiciAperti", codiciAperti);
+        ctx.setVariable("prodottiAperti" , prodottiAperti);
         ctx.setVariable("queryString", queryString);
 
         this.templateEngine.process("risultati",ctx, response.getWriter());

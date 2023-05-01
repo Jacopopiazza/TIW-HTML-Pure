@@ -59,8 +59,7 @@ tr:nth-child(even) {
     clear: both;
 }
 
-.listview-row input[type="submit"], .listview-row input[type="submit"]:focus,
-.listview-row input[type="submit"]:active {
+.listview-row-title, .listview-row-title:focus, .listview-row-title:active{
     border: none;
     background:none;
     outline: none;
@@ -79,4 +78,9 @@ tr:nth-child(even) {
     padding: 14px 16px;
     margin: 5px 0px;
     border: 1px solid black;
+}
+
+.listview-row img{
+    width: 25%;
+    height: auto;
 }

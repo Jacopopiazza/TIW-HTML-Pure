@@ -20,14 +20,54 @@
             <div class="risultati">
                 <ul class="listview">
                     <li class="listview-row" th:if="${!risultati.isEmpty()}" th:each=" risultato : ${risultati.keySet()}">
-                        <form th:action="@{${codiciAperti.contains(risultato.codice) ? '/risultati' : '/visualizza'}}" th:method="${codiciAperti.contains(risultato.codice) ? 'GET' : 'POST'}">
+                        <form th:action="@{${prodottiAperti.keySet().contains(risultato.codice) ? '/risultati' : '/visualizza'}}" th:method="${prodottiAperti.keySet().contains(risultato.codice) ? 'GET' : 'POST'}">
                             <input type="hidden" name="queryString" th:value="${queryString}" />
-                            <input th:each=" codice : ${codiciAperti}" th:if="${!codice.equals(risultato.codice)}" type="hidden" name="aperto" th:value="${codice}"/>
+                            <input th:each=" codice : ${prodottiAperti.keySet()}" th:if="${!codice.equals(risultato.codice)}" type="hidden" name="aperto" th:value="${codice}"/>
                             <input type="hidden" name="visualizzato" th:value="${risultato.codice}" />
-                            <input type="submit" th:value="${risultato.codice + ' - ' + risultato.nome + ': ' + risultati.get(risultato) + ' €'}" value="123 - Nome prodotto: 12.00 €">
+                            <input class="listview-row-title" type="submit" th:value="${risultato.codice + ' - ' + risultato.nome + ': ' + risultati.get(risultato) + ' €'}" value="123 - Nome prodotto: 12.00 €">
                         </form>
-                        <div th:if="${codiciAperti.contains(risultato.codice)}">
-                            <p th:text="${risultato.descrizione()}"></p>
+                        <div th:if="${prodottiAperti.keySet().contains(risultato.codice)}">
+                            <img th:src="@{${'/image?codiceProdotto=' + risultato.codice}}" alt="immagine prodotto"/>
+                            <p th:text="${'Nome: ' + risultato.nome}">Nome prodotto</p>
+                            <p th:text="${'Descrizione: ' + risultato.descrizione}">Descrizione prodotto</p>
+                            <p th:text="${'Categoria: ' + risultato.categoria}">Categoria prodotto</p>
+
+                            <h3>Fornitori</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Valutazione</th>
+                                        <th>Prezzo Unitario</th>
+                                        <th>Spese Spedizione</th>
+                                        <th>Spesa minima spedizione gratuita</th>
+                                        <th>Già nel carrello</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="fornitore : ${prodottiAperti.get(risultato.codice)}">
+                                        <td th:text="${fornitore.getKey().nome}">Primo fornitore</td>
+                                        <td th:text="${fornitore.getKey().valutazione + ' / 5.0'}">3 / 5</td>
+                                        <td th:text="${fornitore.getValue() +' €'}">12.50€</td>
+                                        <td>
+                                            <ul>
+                                                <li th:each="fascia : ${fornitore.getKey().getFasceSpedizione()}" th:text = "${fascia.numeroMassimoArticoli == null} ? ${'> ' + fascia.numeroMinimoArticoli + ' articoli: ' + fascia.prezzoSpedizione + ' €'} : ${fascia.numeroMinimoArticoli + ' - ' + fascia.numeroMassimoArticoli + ' articoli: ' + fascia.prezzoSpedizione + ' €'}"></li>
+                                            </ul>
+                                        </td>
+                                        <td th:text="${fornitore.getKey().sogliaSpedizioneGratuita != null} ? ${fornitore.getKey().getSogliaSpedizioneGratuita() + ' €'} : ${'Nessuna soglia di spesa per la spedizione gratuita'}">49.99€</td>
+                                        <td>Nessun prodotto di questo fornitore nel carrello</td>
+                                        <td>
+                                            <form th:action="@{/carrello}" method="POST">
+                                                <input type="number" min="0" value="0" name="quantita"/>
+                                                <input type="hidden" th:value="${risultato.codice}" name="codiceProdotto" />
+                                                <input type="hidden" th:value="${fornitore.getKey().codice}" name="codiceFornitore" />
+                                                <input type="submit" value="Metti nel carrello!" />
+                                             </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </li>
                 </ul>
