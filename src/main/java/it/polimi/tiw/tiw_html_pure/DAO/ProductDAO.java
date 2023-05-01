@@ -131,4 +131,32 @@ public class ProductDAO {
         pstatement.setInt(2, codiceProdotto);
         pstatement.executeUpdate();
     }
+
+    public boolean checkProductHasSupplier(int codiceProdotto, int codiceFornitore) throws SQLException {
+        String query = "SELECT * FROM prodottodafornitore WHERE CodiceProdotto=? AND CodiceFornitore=?";
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        statement.setInt(1, codiceProdotto);
+        statement.setInt(2, codiceFornitore);
+
+        ResultSet resultSet = statement.executeQuery();
+
+        return resultSet.isBeforeFirst();
+
+    }
+
+    public int getPriceForProductFromSupplier(int codiceProdotto, int codiceFornitore) throws SQLException{
+        String query = "SELECT * FROM prodottodafornitore WHERE CodiceProdotto=? AND CodiceFornitore=?";
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        statement.setInt(1, codiceProdotto);
+        statement.setInt(2, codiceFornitore);
+
+        ResultSet resultSet = statement.executeQuery();
+
+        resultSet.next();
+
+        return resultSet.getInt("Prezzo");
+    }
+
 }

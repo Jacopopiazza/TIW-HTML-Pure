@@ -57,7 +57,7 @@ public class SupplierDAO {
 
     }
 
-    public List<DeliveryCost> getDeliveryCostsForSupplier(int codiceFornitore) throws SQLException{
+    protected List<DeliveryCost> getDeliveryCostsForSupplier(int codiceFornitore) throws SQLException{
         String query = "SELECT * FROM fasciaspedizione WHERE CodiceFornitore=?";
         List<DeliveryCost> deliveryCosts = new ArrayList<>();
         PreparedStatement statement = connection.prepareStatement(query);

@@ -52,11 +52,11 @@
                                         <td th:text="${fornitore.getValue() +' €'}">12.50€</td>
                                         <td>
                                             <ul>
-                                                <li th:each="fascia : ${fornitore.getKey().getFasceSpedizione()}" th:text = "${fascia.numeroMassimoArticoli == null} ? ${'> ' + fascia.numeroMinimoArticoli + ' articoli: ' + fascia.prezzoSpedizione + ' €'} : ${fascia.numeroMinimoArticoli + ' - ' + fascia.numeroMassimoArticoli + ' articoli: ' + fascia.prezzoSpedizione + ' €'}"></li>
+                                                <li th:each="fascia : ${fornitore.getKey().getFasceSpedizione()}" th:text = "${fascia.numeroMassimoArticoli == null} ? ${'Da ' + fascia.numeroMinimoArticoli + ' articoli: ' + fascia.prezzoSpedizione + ' €'} : ${fascia.numeroMinimoArticoli + ' - ' + fascia.numeroMassimoArticoli + ' articoli: ' + fascia.prezzoSpedizione + ' €'}"></li>
                                             </ul>
                                         </td>
                                         <td th:text="${fornitore.getKey().sogliaSpedizioneGratuita != null} ? ${fornitore.getKey().getSogliaSpedizioneGratuita() + ' €'} : ${'Nessuna soglia di spesa per la spedizione gratuita'}">49.99€</td>
-                                        <td>Nessun prodotto di questo fornitore nel carrello</td>
+                                        <td th:with="info = ${cartDAO.getInformationForSupplier(fornitore.getKey().codice)}" th:text="${info.count() > 0} ? ${info.count() + ' articoli di questo fornitore nel carrello, per un valore di ' + info.value() / 100.00 + ' € totali'} : ${'Nessun prodotto di questo fornitore nel carrello'}"></td>
                                         <td>
                                             <form th:action="@{/carrello}" method="POST">
                                                 <input type="number" min="0" value="0" name="quantita"/>

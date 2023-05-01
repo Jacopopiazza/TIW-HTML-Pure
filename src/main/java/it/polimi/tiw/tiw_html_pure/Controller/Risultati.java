@@ -3,6 +3,7 @@ package it.polimi.tiw.tiw_html_pure.Controller;
 import it.polimi.tiw.tiw_html_pure.Bean.Product;
 import it.polimi.tiw.tiw_html_pure.Bean.Supplier;
 import it.polimi.tiw.tiw_html_pure.Bean.User;
+import it.polimi.tiw.tiw_html_pure.DAO.CartDAO;
 import it.polimi.tiw.tiw_html_pure.DAO.ProductDAO;
 import it.polimi.tiw.tiw_html_pure.DAO.SupplierDAO;
 import it.polimi.tiw.tiw_html_pure.Utilities.ConnectionFactory;
@@ -103,9 +104,12 @@ public class Risultati extends HttpServlet {
             return;
         }
 
+        //
+        CartDAO cartDAO = new CartDAO(request.getSession(false), this.connection);
+
+        ctx.setVariable("cartDAO", cartDAO);
         ctx.setVariable("risultati", risultati);
         ctx.setVariable("products", menuProducts);
-        //ctx.setVariable("codiciAperti", codiciAperti);
         ctx.setVariable("prodottiAperti" , prodottiAperti);
         ctx.setVariable("queryString", queryString);
 

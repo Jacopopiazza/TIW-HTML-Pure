@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Home</title>
+        <link rel="stylesheet" type="text/css" media="all"
+              href="../css/stylesheet.css" th:href="@{/css/stylesheet.css}" />
+
+    </head>
+    <body>
+
+    <div th:insert="@{fragments/fragments.html} :: navbar (products = ${products})"></div>
+
+
+
+    </body>
+</html>
