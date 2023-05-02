@@ -98,7 +98,7 @@ public class ProductDAO {
     }
 
     public Map<Product, Double> getProductsFromQueryString(String queryString) throws SQLException{
-        String query = "SELECT P.*, Min(Prezzo) AS PrezzoMinimo FROM db_tiw.prodotto P INNER JOIN db_tiw.prodottodafornitore PDF on P.Codice=PDF.CodiceProdotto WHERE P.Nome LIKE ? OR P.Descrizione=? GROUP BY CodiceProdotto ORDER BY PrezzoMinimo;";
+        String query = "SELECT P.*, Min(Prezzo) AS PrezzoMinimo FROM db_tiw.prodotto P INNER JOIN db_tiw.prodottodafornitore PDF on P.Codice=PDF.CodiceProdotto WHERE P.Nome LIKE ? OR P.Descrizione LIKE ? GROUP BY CodiceProdotto ORDER BY PrezzoMinimo;";
         Map<Product, Double> prods = new HashMap<>();
         PreparedStatement statement = connection.prepareStatement(query);
 
