@@ -22,6 +22,30 @@ public class SupplierDAO {
         this.connection = connection;
     }
 
+    public Supplier getSupplier(int codiceFornitore) throws SQLException {
+        String query = "SELECT * FROM fornitore WHERE Codice=?";
+
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setInt(1,codiceFornitore);
+        ResultSet resultSet = statement.executeQuery();
+
+        if(!resultSet.isBeforeFirst()) return null;
+        resultSet.next();
+
+        Integer sogliaSpedizione = resultSet.getInt("SogliaSpedizioneGratuita");
+        if(resultSet.wasNull()){
+            sogliaSpedizione = null;
+        }
+
+        List<DeliveryCost> deliveryCostList = this.getDeliveryCostsForSupplier(resultSet.getInt("Codice"));
+        return new Supplier(resultSet.getInt("Codice"),
+                resultSet.getString("Nome"),
+                resultSet.getDouble("Valutazione"),
+                sogliaSpedizione,
+                deliveryCostList);
+
+
+    }
     public Map<Supplier, Double> getSuppliersAndPricesForProduct(int codiceProdotto) throws SQLException {
 
         String query = "SELECT F.*, Prezzo FROM prodottodafornitore pdf INNER JOIN fornitore F on pdf.CodiceFornitore=F.Codice WHERE CodiceProdotto=?";

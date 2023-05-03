@@ -18,6 +18,29 @@ public class ProductDAO {
         this.connection = connection;
     }
 
+    public Product getProduct(int codiceProdotto) throws SQLException{
+        String query = "SELECT * FROM prodotto WHERE Codice = ?";
+
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setInt(1, codiceProdotto);
+        ResultSet resultSet = statement.executeQuery();
+
+        if(resultSet.isBeforeFirst()) {
+            resultSet.next();
+
+
+            Product product = new Product(resultSet.getInt("Codice"),
+                    resultSet.getString("Nome"),
+                    resultSet.getString("Descrizione"),
+                    resultSet.getString("Foto"),
+                    resultSet.getString("Categoria"));
+            return product;
+
+
+        }
+        return null;
+    }
+
     public List<Product> getMenuProductsForUser(String email)throws SQLException {
 
         String query = "SELECT P.* , Timestamp FROM visualizzazioni v1 INNER JOIN prodotto P on P.Codice=v1.CodiceProdotto WHERE EmailUtente=? and Timestamp = (SELECT MAX(Timestamp) FROM visualizzazioni v2 WHERE v2.EmailUtente=v1.EmailUtente AND v2.CodiceProdotto=v1.CodiceProdotto) ORDER BY Timestamp DESC LIMIT 5";

@@ -14,6 +14,20 @@
     <div th:insert="@{fragments/fragments.html} :: navbar (products = ${products})"></div>
 
 
+    <div>
+        <h2>Carrello</h2>
+        <p th:if="${cart.isEmpty()}">Nessun prodotto nel carrello</p>
+
+        <ul th:if="${!cart.isEmpty()}">
+            <li th:each=" entryCarrello : ${cart.entrySet()}" th:with=" fornitore = ${supplierDAO.getSupplier(entryCarrello.getKey())}">
+
+                <p th:text="${fornitore.getNome()}"></p>
+
+            </li>
+        </ul>
+
+    </div>
+
 
     </body>
 </html>

@@ -28,49 +28,51 @@ public class CartDAO {
 
     public void addProductToCart(int codiceProdotto, int codiceFornitore, int quantita){
 
-        Map<ProductBySupplier, Integer> carrello = (Map<ProductBySupplier, Integer>)session.getAttribute("cart");
-        if(carrello == null){
-            carrello = new HashMap<>();
-            session.setAttribute("cart",carrello);
-        }
-        ProductBySupplier pbs = new ProductBySupplier(codiceProdotto,codiceFornitore);
+        Map<Integer, Map<Integer, Integer>> carrello = getRealCart();
+
         int old = 0;
-        if(carrello.keySet().contains(pbs)){
-            old = carrello.get(pbs);
+
+        if(!carrello.containsKey(codiceFornitore)){
+            carrello.put(codiceFornitore, new HashMap<>());
         }
 
-        carrello.put(pbs, old + quantita);
+        if(carrello.get(codiceFornitore).containsKey(codiceProdotto)){
+            old = carrello.get(codiceFornitore).get(codiceProdotto);
+        }
 
+        carrello.get(codiceFornitore).put(codiceProdotto, old + quantita);
 
     }
 
     public InfoSupplier getInformationForSupplier(int codiceFornitore) {
 
         ProductDAO productDAO = new ProductDAO(connection);
-        Map<ProductBySupplier, Integer> carrello = getRealCart();
+        Map<Integer, Map<Integer, Integer>> carrello = getRealCart();
         int count = 0;
         int value = 0;
-        for (Map.Entry<ProductBySupplier, Integer> e : carrello.entrySet()){
-            if(e.getKey().codiceFornitore() != codiceFornitore) continue;
+
+        if(!carrello.containsKey(codiceFornitore)) return new InfoSupplier(0,0);
+
+        for(Map.Entry<Integer, Integer> e : carrello.get(codiceFornitore).entrySet()){
             count += e.getValue();
             try{
-                value += productDAO.getPriceForProductFromSupplier(e.getKey().codiceProdotto(), e.getKey().codiceFornitore()) * e.getValue();
+                value += productDAO.getPriceForProductFromSupplier(e.getKey(), codiceFornitore) * e.getValue();
             }catch (SQLException ex){
                 System.out.println("Errore nel recupero dei prezzi... controlla");
-                System.out.println("Codice Fornitore: " +e.getKey().codiceFornitore() + ", Codice Prodotto: " + e.getKey().codiceProdotto());
+                System.out.println("Codice Fornitore: " + codiceFornitore + ", Codice Prodotto: " + e.getKey());
                 System.out.println(ex.getMessage());
                 throw new RuntimeException(ex);
             }
-
         }
+
 
         InfoSupplier info = new InfoSupplier(count,value);
 
         return info;
     }
 
-    private Map<ProductBySupplier, Integer> getRealCart(){
-        Map<ProductBySupplier, Integer> carrello = (Map<ProductBySupplier, Integer>)session.getAttribute("cart");
+    private Map<Integer, Map<Integer, Integer>> getRealCart(){
+        Map<Integer, Map<Integer, Integer>> carrello = (Map<Integer, Map<Integer, Integer>>)session.getAttribute("cart");
         if(carrello == null){
             carrello = new HashMap<>();
             session.setAttribute("cart",carrello);
@@ -79,7 +81,7 @@ public class CartDAO {
         return carrello;
     }
 
-    public Map<ProductBySupplier, Integer> getCart(){
+    public Map<Integer, Map<Integer, Integer>> getCart(){
         return Collections.unmodifiableMap(getRealCart());
     }
 }

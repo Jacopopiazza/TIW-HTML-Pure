@@ -26,7 +26,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Queue;
 
-@WebServlet(name = "Home", value="/home")
+@WebServlet(name = "Home", value= "/home")
 public class Home extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

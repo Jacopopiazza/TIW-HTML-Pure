@@ -1,9 +1,12 @@
 package it.polimi.tiw.tiw_html_pure.Controller;
 
 import it.polimi.tiw.tiw_html_pure.Bean.Product;
+import it.polimi.tiw.tiw_html_pure.Bean.ProductBySupplier;
+import it.polimi.tiw.tiw_html_pure.Bean.Supplier;
 import it.polimi.tiw.tiw_html_pure.Bean.User;
 import it.polimi.tiw.tiw_html_pure.DAO.CartDAO;
 import it.polimi.tiw.tiw_html_pure.DAO.ProductDAO;
+import it.polimi.tiw.tiw_html_pure.DAO.SupplierDAO;
 import it.polimi.tiw.tiw_html_pure.Utilities.ConnectionFactory;
 import it.polimi.tiw.tiw_html_pure.Utilities.TemplateFactory;
 import jakarta.servlet.UnavailableException;
@@ -22,7 +25,11 @@ import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @WebServlet(name ="Carrello", value = "/carrello")
 public class Carrello extends HttpServlet {
@@ -55,10 +62,21 @@ public class Carrello extends HttpServlet {
             return;
         }
 
+        CartDAO cartDAO = new CartDAO(session,connection);
+        SupplierDAO supplierDAO = new SupplierDAO(connection);
 
-
+        ctx.setVariable("cart", cartDAO.getCart());
         ctx.setVariable("products", menuProducts);
-        this.templateEngine.process("carrello",ctx, response.getWriter());
+        ctx.setVariable("supplierDAO", supplierDAO);
+        ctx.setVariable("productDAO", productDAO);
+
+        try{
+            this.templateEngine.process("carrello",ctx, response.getWriter());
+        }catch(RuntimeException ex){
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while rendering cart.");
+            return;
+        }
+
     }
 
 
