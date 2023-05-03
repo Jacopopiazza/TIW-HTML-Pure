@@ -11,9 +11,20 @@
     </head>
     <body>
 
-    <div th:insert="@{fragments/fragments.html} :: navbar (products = ${products})"></div>
+    <div th:insert="@{fragments/fragments.html} :: navbar"></div>
 
-
+    <h2 th:if="${products.isEmpty()}">No products in DB</h2>
+    <h2 th:if="${!products.isEmpty()}">Hai visto di recente o potrebbe interessarti:</h2>
+    <br/>
+    <div class="card-container">
+        <div class="card" style="width: 18rem;" th:if="${!products.isEmpty()}" th:each="prod : ${products}">
+            <img th:src="@{${'/image?codiceProdotto=' + prod.codice}}" class="card-img-top"/>
+            <div class="card-body">
+                <p th:text="${'Codice: ' + prod.Codice}"></p>
+                <p th:text="${'Nome Prodotto: ' + prod.nome()}"></p>
+            </div>
+        </div>
+    </div>
 
     </body>
 </html>

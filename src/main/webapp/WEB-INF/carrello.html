@@ -11,17 +11,46 @@
     </head>
     <body>
 
-    <div th:insert="@{fragments/fragments.html} :: navbar (products = ${products})"></div>
+    <div th:insert="@{fragments/fragments.html} :: navbar"></div>
 
 
     <div>
         <h2>Carrello</h2>
         <p th:if="${cart.isEmpty()}">Nessun prodotto nel carrello</p>
 
-        <ul th:if="${!cart.isEmpty()}">
-            <li th:each=" entryCarrello : ${cart.entrySet()}" th:with=" fornitore = ${supplierDAO.getSupplier(entryCarrello.getKey())}">
+        <ul class="listview" th:if="${!cart.isEmpty()}">
+            <li class="listview-row" th:each=" entryCarrello : ${cart.entrySet()}" th:if="${!entryCarrello.getValue().isEmpty()}" th:with=" fornitore = ${supplierDAO.getSupplier(entryCarrello.getKey())}">
 
-                <p th:text="${fornitore.getNome()}"></p>
+
+                <div class="order-heading">
+                    <h3 th:text="${fornitore.getNome()}"></h3>
+                    <form th:action="@{/ordini}" method="POST">
+                        <input type="submit" value="Ordina!"/>
+                        <input type="hidden" name="fornitore" th:value="${fornitore.codice}"/>
+                    </form>
+                </div>
+                <br/>
+                <table class="order-table">
+                    <thead>
+                        <tr>
+                            <th>Prodotto</th>
+                            <th>Immagine</th>
+                            <th>Quantità</th>
+                            <th>Prezzo Unitario</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each=" entryProdotto : ${entryCarrello.getValue().entrySet()}" th:with=" prodotto = ${productDAO.getProduct(entryProdotto.getKey())}">
+                            <td th:text="${prodotto.nome()}"></td>
+                            <td><img th:src="@{${'/image?codiceProdotto=' + prodotto.codice}}"/></td>
+                            <td th:text="${entryProdotto.getValue()}"></td>
+                            <td th:text="${productDAO.getPriceForProductFromSupplier(prodotto.codice,fornitore.codice) / 100.00 + ' €'}"></td>
+
+                        </tr>
+                    </tbody>
+
+                </table>
+
 
             </li>
         </ul>

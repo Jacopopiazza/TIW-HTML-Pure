@@ -113,7 +113,12 @@ public class Risultati extends HttpServlet {
         ctx.setVariable("prodottiAperti" , prodottiAperti);
         ctx.setVariable("queryString", queryString);
 
-        this.templateEngine.process("risultati",ctx, response.getWriter());
+        try{
+            this.templateEngine.process("risultati",ctx, response.getWriter());
+        }catch (Exception e){
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            return;
+        }
     }
 
     @Override
