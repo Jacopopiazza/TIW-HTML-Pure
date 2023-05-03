@@ -19,14 +19,14 @@
         <p th:if="${cart.isEmpty()}">Nessun prodotto nel carrello</p>
 
         <ul class="listview" th:if="${!cart.isEmpty()}">
-            <li class="listview-row" th:each=" entryCarrello : ${cart.entrySet()}" th:if="${!entryCarrello.getValue().isEmpty()}" th:with=" fornitore = ${supplierDAO.getSupplier(entryCarrello.getKey())}">
+            <li class="listview-row" th:each=" entryCarrello : ${cart.entrySet()}" th:if="${entryCarrello.getValue() != null && !entryCarrello.getValue().isEmpty()}" th:with=" fornitore = ${supplierDAO.getSupplier(entryCarrello.getKey())}">
 
 
                 <div class="order-heading">
                     <h3 th:text="${fornitore.getNome()}"></h3>
                     <form th:action="@{/ordini}" method="POST">
                         <input type="submit" value="Ordina!"/>
-                        <input type="hidden" name="fornitore" th:value="${fornitore.codice}"/>
+                        <input type="hidden" name="codiceFornitore" th:value="${fornitore.codice}"/>
                     </form>
                 </div>
                 <br/>

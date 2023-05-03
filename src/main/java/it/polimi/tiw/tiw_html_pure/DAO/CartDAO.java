@@ -81,6 +81,11 @@ public class CartDAO {
         return carrello;
     }
 
+    public void removeProductOfSupplier(int codiceFornitore) {
+        Map<Integer, Map<Integer,Integer>> carrello = getRealCart();
+        carrello.remove(codiceFornitore);
+    }
+
     public Map<Integer, Map<Integer, Integer>> getCart(){
         return Collections.unmodifiableMap(getRealCart());
     }

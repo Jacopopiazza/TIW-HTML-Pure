@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Ordini</title>
+        <link rel="stylesheet" type="text/css" media="all"
+              href="../css/stylesheet.css" th:href="@{/css/stylesheet.css}" />
+
+    </head>
+    <body>
+
+        <div th:insert="@{fragments/fragments.html} :: navbar"></div>
+
+        <div>
+            <p th:if="${ordini.isEmpty()}">Non hai ancora effettuato alcun ordine.</p>
+
+            <h2 th:if="${!ordini.isEmpty()}">Storico ordini:</h2>
+            <div class="risultati">
+                <ul class="listview">
+                    <li class="listview-row" th:if="${!ordini.isEmpty()}" th:each="ordine : ${ordini}">
+
+                        <div>
+                            <h3 th:text="${'Codice ordine: ' + ordine.codice()}">Codice Ordine</h3>
+                            <p th:text="${'Fornitore: ' + ordine.codiceFornitore()}">Codice Fornitore</p>
+                            <p th:if="${ordine.dataSpedizione() != null}" th:text="${'Data di spedizione: ' + ordine.dataSpedizione().toString()}">Data Spedizione</p>
+                            <p th:if="${ordine.dataSpedizione() == null}" th:text="${'Ordine non ancora spedito.'}">Data Spedizione</p>
+
+                            <p th:text="${'Indirizzo di spedizione: ' + ordine.via() + ' ' + ordine.civico() + ', ' + ordine.citta() + ' (' + ordine.provincia() + '), ' + ordine.CAP() + ', ' + ordine.stato()}">Indirizzo di consegna</p>
+
+                            <p th:text="${'Totale ordine: ' + ordine.totaleOrdine() / 100.00 + ' €'}">Totale ordine</p>
+                            <p th:text="${'Spese di spedizione: ' + ordine.speseSpedizione() / 100.00 + ' €'}">Spese di spedizione</p>
+
+                            <h3>Prodotti</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Codice Prodotto</th>
+                                        <th>Prezzo Unitario</th>
+                                        <th>Quantita Ordinata</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="prodotto : ${ordine.orderDetails()}">
+                                        <td th:text="${prodotto.codiceProdotto()}">Codice</td>
+                                        <td th:text="${prodotto.prezzoUnitario() / 100.00 + ' €'}">Prezzo</td>
+                                        <td th:text="${prodotto.quantita()}">Q.nta</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+
+    </body>
+</html>

@@ -1,8 +1,12 @@
 package it.polimi.tiw.tiw_html_pure.DAO;
 
+import it.polimi.tiw.tiw_html_pure.Bean.Order;
+import it.polimi.tiw.tiw_html_pure.Bean.OrderDetail;
 import it.polimi.tiw.tiw_html_pure.Bean.User;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class OrderDAO {
@@ -11,6 +15,47 @@ public class OrderDAO {
 
     public OrderDAO(Connection connection) {
         this.connection = connection;
+    }
+
+    public List<Order> getOrdersForUser(String emailUtente) throws SQLException{
+
+        String query = "SELECT * FROM ordine WHERE EmailUtente=? ORDER BY DataSpedizione DESC";
+        PreparedStatement stmt = connection.prepareStatement(query);
+
+        stmt.setString(1,emailUtente);
+
+        ResultSet rs = stmt.executeQuery();
+
+        if( !rs.isBeforeFirst() ) return new ArrayList<>();
+
+        List<Order> ordini = new ArrayList<>();
+
+        PreparedStatement stmt2 = connection.prepareStatement("SELECT * FROM dettaglioordine WHERE CodiceOrdine=?");
+
+        while(rs.next()){
+            stmt2.setInt(1,rs.getInt("Codice"));
+            ResultSet rs2 = stmt2.executeQuery();
+
+            if( !rs2.isBeforeFirst()) throw new SQLException("Inconsistent order");
+
+            Order order;
+            List<OrderDetail> orderDetails = new ArrayList<>();
+
+            while(rs2.next()){
+                //Here in rs there are all the products of order in rs
+                OrderDetail orderDetail = new OrderDetail(rs.getInt("Codice"), rs2.getInt("CodiceProdotto"), rs2.getInt("PrezzoUnitario"), rs2.getInt("Quantita"));
+                orderDetails.add(orderDetail);
+            }
+            Date date = rs.getDate("DataSpedizione");
+            if(rs.wasNull()){
+                date = null;
+            }
+            order = new Order(rs.getInt("Codice"), rs.getInt("CodiceFornitore"), rs.getInt("TotaleOrdine"), rs.getInt("SpeseSpedizione"),
+                    rs.getString("Via"), rs.getString("Civico"), rs.getString("Citta"), rs.getString("Provincia"),
+                    rs.getString("CAP"),rs.getString("Stato"), rs.getString("EmailUtente"), date, orderDetails);
+            ordini.add(order);
+        }
+        return ordini;
     }
 
     public void createOrder(User user,int codiceFornitore, int speseSpedizione, int totaleOrdine, Map<Integer, Integer> prodottiOrdine) throws SQLException {
@@ -31,7 +76,6 @@ public class OrderDAO {
             stmt1.setString(9, user.email());
             stmt1.setInt(10, totaleOrdine);
 
-            stmt1.executeUpdate();
             int affectedRows1 = stmt1.executeUpdate();
             if (affectedRows1 == 0) {
                 throw new SQLException("Creazione dell'ordine fallita, nessuna riga inserita.");
@@ -39,9 +83,10 @@ public class OrderDAO {
 
             //Ottengo l'id dell'ordine generato
             ResultSet rs = stmt1.getGeneratedKeys();
+
             int id_ordine = -1;
             if (rs.next()) {
-                id_ordine = rs.getInt("Codice");
+                id_ordine = rs.getInt(1);
             } else {
                 throw new SQLException("Creazione dell'ordine fallita, impossibile ottenere l'ID generato.");
             }

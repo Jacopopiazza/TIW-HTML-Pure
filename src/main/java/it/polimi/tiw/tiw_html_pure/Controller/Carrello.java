@@ -110,6 +110,18 @@ public class Carrello extends HttpServlet {
             return;
         }
 
+        ProductDAO productDAO = new ProductDAO(connection);
+
+        try{
+            if(!productDAO.checkProductHasSupplier(codiceProdotto,codiceFornitore)){
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter");
+                return;
+            }
+        }catch (SQLException ex){
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occured while checking parameter");
+            return;
+        }
+
         CartDAO cartDAO = new CartDAO(req.getSession(false), this.connection);
         cartDAO.addProductToCart(codiceProdotto, codiceFornitore, quantita);
 
