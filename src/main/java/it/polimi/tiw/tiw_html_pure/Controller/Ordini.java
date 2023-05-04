@@ -5,6 +5,7 @@ import it.polimi.tiw.tiw_html_pure.DAO.CartDAO;
 import it.polimi.tiw.tiw_html_pure.DAO.OrderDAO;
 import it.polimi.tiw.tiw_html_pure.DAO.ProductDAO;
 import it.polimi.tiw.tiw_html_pure.DAO.SupplierDAO;
+import it.polimi.tiw.tiw_html_pure.InvalidParameterException;
 import it.polimi.tiw.tiw_html_pure.Utilities.ConnectionFactory;
 import it.polimi.tiw.tiw_html_pure.Utilities.TemplateFactory;
 import jakarta.servlet.ServletException;
@@ -65,6 +66,8 @@ public class Ordini extends HttpServlet {
 
 
         ctx.setVariable("ordini", ordini);
+        ctx.setVariable("supplierDAO", new SupplierDAO(connection));
+        ctx.setVariable("productDAO", new ProductDAO(connection));
 
         try{
             this.templateEngine.process("ordini",ctx, response.getWriter());
@@ -127,7 +130,7 @@ public class Ordini extends HttpServlet {
                 }
             }).reduce(0, Integer::sum);
         }catch (RuntimeException ex){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving prices.");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving prices." + ex.getMessage());
             return;
         }
 
@@ -137,11 +140,11 @@ public class Ordini extends HttpServlet {
             return;
         }
 
-        //Get supplier to calculate costs
+        //Get supplier to calculate delivery costs
         try{
             supplier = supplierDAO.getSupplier(codiceFornitore);
         }catch (SQLException ex){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving supplier info.");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving supplier info." + ex.getMessage());
             return;
         }
 
@@ -150,14 +153,17 @@ public class Ordini extends HttpServlet {
             return;
         }
 
-        //Calculate delivery costs
+        //get eventual delivery costs
         if(supplier.getSogliaSpedizioneGratuita() == null ||  subTotale < supplier.getSogliaSpedizioneGratuita()){
-            List<DeliveryCost> deliveryCostList = supplier.getFasceSpedizione().stream().filter(x -> x.getNumeroMinimoArticoli() <= articoliNelCarrello && (x.getNumeroMassimoArticoli() == null || x.getNumeroMassimoArticoli() >= articoliNelCarrello)).sorted(Comparator.comparingInt(DeliveryCost::getNumeroMinimoArticoli)).toList();
-            if(deliveryCostList.isEmpty()){
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving delivery costs.");
+            try{
+                speseSpedizione = supplierDAO.getDeliveryCostOfSupplierForNProducts(codiceFornitore, articoliNelCarrello);
+            }catch (SQLException ex){
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving delivery cost info." + ex.getMessage());
+                return;
+            }catch (InvalidParameterException ex){
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving delivery cost info. Some parameters to query where wrong." + ex.getMessage());
                 return;
             }
-            speseSpedizione = deliveryCostList.get(0).getPrezzoSpedizione();
         }
 
         //Create order
@@ -165,7 +171,7 @@ public class Ordini extends HttpServlet {
         User user = (User)request.getSession(false).getAttribute("user");
 
         try{
-            orderDAO.createOrder(user, codiceFornitore, speseSpedizione, subTotale, prodottiPerOrdine);
+            orderDAO.createOrder(user, codiceFornitore, speseSpedizione, subTotale, prodottiPerOrdine, supplier.getNome());
         }catch (SQLException ex){
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating the order\n." + ex.getMessage());
             return;

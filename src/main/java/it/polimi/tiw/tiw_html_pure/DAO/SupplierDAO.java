@@ -3,6 +3,7 @@ package it.polimi.tiw.tiw_html_pure.DAO;
 import it.polimi.tiw.tiw_html_pure.Bean.DeliveryCost;
 import it.polimi.tiw.tiw_html_pure.Bean.Product;
 import it.polimi.tiw.tiw_html_pure.Bean.Supplier;
+import it.polimi.tiw.tiw_html_pure.InvalidParameterException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -46,10 +47,11 @@ public class SupplierDAO {
 
 
     }
-    public Map<Supplier, Double> getSuppliersAndPricesForProduct(int codiceProdotto) throws SQLException {
+
+    public Map<Supplier, Integer> getSuppliersAndPricesForProduct(int codiceProdotto) throws SQLException {
 
         String query = "SELECT F.*, Prezzo FROM prodottodafornitore pdf INNER JOIN fornitore F on pdf.CodiceFornitore=F.Codice WHERE CodiceProdotto=?";
-        Map<Supplier, Double> suppliers = new HashMap<>();
+        Map<Supplier, Integer> suppliers = new HashMap<>();
         PreparedStatement statement = connection.prepareStatement(query);
 
         statement.setInt(1, codiceProdotto);
@@ -74,7 +76,7 @@ public class SupplierDAO {
                     sogliaSpedizione,
                     deliveryCostList);
 
-            suppliers.put(supplier, resultSet.getInt("Prezzo")/100.00);
+            suppliers.put(supplier, resultSet.getInt("Prezzo"));
         }
 
         return suppliers;
@@ -111,6 +113,22 @@ public class SupplierDAO {
         }
 
         return deliveryCosts;
+    }
+
+    public Integer getDeliveryCostOfSupplierForNProducts(int codiceFornitore, int numeroArticoli) throws SQLException, InvalidParameterException{
+        String query = "SELECT PrezzoSpedizione FROM fasciaspedizione WHERE CodiceFornitore = ? AND NumeroMinimoArticoli <= ? AND (NumeroMassimoArticoli IS NULL OR NumeroMassimoArticoli >= ?);";
+        PreparedStatement stmt = connection.prepareStatement(query);
+        stmt.setInt(1, codiceFornitore);
+        stmt.setInt(2, numeroArticoli);
+        stmt.setInt(3, numeroArticoli);
+
+        ResultSet rs = stmt.executeQuery();
+
+        if(!rs.isBeforeFirst()) throw new InvalidParameterException("Invalid parameters");
+
+        rs.next();
+        return rs.getInt("PrezzoSpedizione");
+
     }
 
 

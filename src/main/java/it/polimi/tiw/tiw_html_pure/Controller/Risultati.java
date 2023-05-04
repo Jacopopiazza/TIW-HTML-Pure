@@ -54,7 +54,7 @@ public class Risultati extends HttpServlet {
         SupplierDAO supplierDAO = new SupplierDAO(connection);
 
         String[] aperti = request.getParameterValues("aperto");
-        Map<Integer, Map<Supplier, Double>> prodottiAperti = new HashMap<>();
+        Map<Integer, Map<Supplier, Integer>> prodottiAperti = new HashMap<>();
          if(aperti != null){
             for(String s : aperti)
                 try{
@@ -64,7 +64,7 @@ public class Risultati extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter");
                     return;
                 }catch(SQLException ex){
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while retriving suppliers for open products");
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while retriving suppliers for open products" + ex.getMessage());
                     return;
                 }
         }

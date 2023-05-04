@@ -49,13 +49,13 @@
                                     <tr th:each="fornitore : ${prodottiAperti.get(risultato.codice)}">
                                         <td th:text="${fornitore.getKey().nome}">Primo fornitore</td>
                                         <td th:text="${fornitore.getKey().valutazione + ' / 5.0'}">3 / 5</td>
-                                        <td th:text="${fornitore.getValue() +' €'}">12.50€</td>
+                                        <td th:text="${fornitore.getValue() / 100.00 +' €'}">12.50€</td>
                                         <td>
                                             <ul>
                                                 <li th:each="fascia : ${fornitore.getKey().getFasceSpedizione()}" th:text = "${fascia.numeroMassimoArticoli == null} ? ${'Da ' + fascia.numeroMinimoArticoli + ' articoli: ' + fascia.prezzoSpedizione / 100.00 + ' €'} : ${fascia.numeroMinimoArticoli + ' - ' + fascia.numeroMassimoArticoli + ' articoli: ' + fascia.prezzoSpedizione / 100.00 + ' €'}"></li>
                                             </ul>
                                         </td>
-                                        <td th:text="${fornitore.getKey().sogliaSpedizioneGratuita != null} ? ${fornitore.getKey().getSogliaSpedizioneGratuita() + ' €'} : ${'Nessuna soglia di spesa per la spedizione gratuita'}">49.99€</td>
+                                        <td th:text="${fornitore.getKey().sogliaSpedizioneGratuita != null} ? ${fornitore.getKey().getSogliaSpedizioneGratuita() / 100.00 + ' €'} : ${'Nessuna soglia di spesa per la spedizione gratuita'}">49.99€</td>
                                         <td th:with="info = ${cartDAO.getInformationForSupplier(fornitore.getKey().codice)}" th:text="${info.count() > 0} ? ${info.count() + ' articoli di questo fornitore nel carrello, per un valore di ' + info.value() / 100.00 + ' € totali'} : ${'Nessun prodotto di questo fornitore nel carrello'}"></td>
                                         <td>
                                             <form th:action="@{/carrello}" method="POST">

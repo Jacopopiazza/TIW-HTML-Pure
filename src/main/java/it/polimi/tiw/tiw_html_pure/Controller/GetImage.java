@@ -19,6 +19,7 @@ import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.SQLException;
