@@ -39,9 +39,7 @@ public class Signup extends HttpServlet {
             final WebContext ctx = new WebContext(webExchange, request.getLocale());
 
             if (request.getParameter("error") != null)
-                ctx.setVariable("error", true);
-            else if (request.getParameter("success") != null)
-                ctx.setVariable("success", true);
+                ctx.setVariable("error", request.getParameter("error"));
 
             this.templateEngine.process("register",ctx, response.getWriter());
         }

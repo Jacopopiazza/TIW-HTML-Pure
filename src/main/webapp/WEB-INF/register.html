@@ -7,7 +7,7 @@
   </head>
   <body>
 
-    <p th:if="${error != null}" th:text="${error}"></p>
+    <p th:if="${error != null}" style="color:red;" th:text="${error}"></p>
 
     <form th:action="@{/register}" method="POST">
       <label for="email">Email: </label>

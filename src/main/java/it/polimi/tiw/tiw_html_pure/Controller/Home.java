@@ -61,7 +61,12 @@ public class Home extends HttpServlet {
 
 
         ctx.setVariable("products", menuProducts);
-        this.templateEngine.process("home",ctx, response.getWriter());
+        try{
+            this.templateEngine.process("home",ctx, response.getWriter());
+        }catch (Exception ex){
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+        }
+
     }
 
     @Override

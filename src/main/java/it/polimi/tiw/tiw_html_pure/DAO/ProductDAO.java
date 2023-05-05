@@ -109,11 +109,13 @@ public class ProductDAO {
 
         Queue<Product> lasts = new LinkedList<>();
         PreparedStatement statement = connection.prepareStatement(query);
-        ResultSet resultSet = statement.executeQuery();
+
 
         for(int  i = 0; i < notIn.size();i++){
             statement.setInt(i+1, notIn.get(i).codice());
         }
+        ResultSet resultSet = statement.executeQuery();
+
 
         if(!resultSet.isBeforeFirst()){
             return lasts;
