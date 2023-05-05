@@ -43,7 +43,7 @@ public class ProductDAO {
 
     public List<Product> getMenuProductsForUser(String email)throws SQLException {
 
-        String query = "SELECT P.* , Timestamp FROM visualizzazioni v1 INNER JOIN prodotto P on P.Codice=v1.CodiceProdotto WHERE EmailUtente=? and Timestamp = (SELECT MAX(Timestamp) FROM visualizzazioni v2 WHERE v2.EmailUtente=v1.EmailUtente AND v2.CodiceProdotto=v1.CodiceProdotto) ORDER BY Timestamp DESC LIMIT 5";
+        String query = "SELECT P.* , Timestamp FROM visualizzazioni v1 INNER JOIN prodottodafornitore pdf ON pdf.CodiceProdotto=v1.CodiceProdotto INNER JOIN prodotto P on P.Codice=v1.CodiceProdotto WHERE EmailUtente=? and Timestamp = (SELECT MAX(Timestamp) FROM visualizzazioni v2 WHERE v2.EmailUtente=v1.EmailUtente AND v2.CodiceProdotto=v1.CodiceProdotto) ORDER BY Timestamp DESC LIMIT 5";
         List<Product> lasts = new ArrayList<>();
 
         PreparedStatement statement = connection.prepareStatement(query);
@@ -82,7 +82,7 @@ public class ProductDAO {
     }
 
     public String getFotoPathFromCodiceProdotto(int codiceProdotto) throws SQLException{
-        String query = "SELECT Foto FROM prodotto WHERE Codice = ?";
+        String query = "SELECT Foto FROM prodotto P INNER JOIN prodottodafornitore pdf ON P.Codice=pdf.CodiceProdotto WHERE Codice = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         statement.setInt(1, codiceProdotto);
         ResultSet resultSet = statement.executeQuery();

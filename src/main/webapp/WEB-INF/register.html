@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+      <meta charset="UTF-8">
+      <title>Sign UP</title>
+  </head>
+  <body>
+
+    <p th:if="${error != null}" th:text="${error}"></p>
+
+    <form th:action="@{/register}" method="POST">
+      <label for="email">Email: </label>
+      <input type="text" id="email" name="email" placeholder="email" />
+      <label for="password">Password: </label>
+      <input type="password" id="password" name="password" placeholder="password" />
+      <label for="passwordConfirmation">Conferma la password: </label>
+      <input type="password" id="passwordConfirmation" name="passwordConfirmation" placeholder="passwordConfirmation" />
+      <label for="nome">Nome: </label>
+      <input type="text" id="nome" name="nome" placeholder="nome" />
+      <label for="cognome">Cognome: </label>
+      <input type="text" id="cognome" name="cognome" placeholder="cognome" />
+      <label for="via">Via:</label>
+      <input type="text" id="via" name="via" placeholder="via" />
+      <label for="civico">Civico: </label>
+      <input type="text" id="civico" name="civico" placeholder="civico" />
+      <label for="citta">Città: </label>
+      <input type="text" id="citta" name="citta" placeholder="citta" />
+      <label for="provincia">Provincia: </label>
+      <input type="text" id="provincia" name="provincia" placeholder="provincia" />
+      <label for="cap">CAP: </label>
+      <input type="text" id="cap" name="cap" placeholder="cap" />
+      <label for="stato">Stato: </label>
+      <input type="text" id="stato" name="stato" placeholder="stato" />
+
+      <input type="submit" value="registrati" />
+
+    </form>
+  </body>
+</html>
