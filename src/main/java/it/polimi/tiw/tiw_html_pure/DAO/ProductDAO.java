@@ -43,7 +43,7 @@ public class ProductDAO {
 
     public List<Product> getMenuProductsForUser(String email)throws SQLException {
 
-        String query = "SELECT P.* , Timestamp FROM visualizzazioni v1 INNER JOIN prodottodafornitore pdf ON pdf.CodiceProdotto=v1.CodiceProdotto INNER JOIN prodotto P on P.Codice=v1.CodiceProdotto WHERE EmailUtente=? and Timestamp = (SELECT MAX(Timestamp) FROM visualizzazioni v2 WHERE v2.EmailUtente=v1.EmailUtente AND v2.CodiceProdotto=v1.CodiceProdotto) ORDER BY Timestamp DESC LIMIT 5";
+        String query = "SELECT P.*, Timestamp FROM db_tiw.visualizzazioni v1 INNER JOIN prodotto P on P.Codice=v1.CodiceProdotto WHERE Timestamp = (SELECT MAX(Timestamp) FROM visualizzazioni v2 WHERE P.Codice in (SELECT CodiceProdotto FROM prodottodafornitore) AND v2.EmailUtente=? AND v2.CodiceProdotto=v1.CodiceProdotto) ORDER BY Timestamp DESC LIMIT 5;";
         List<Product> lasts = new ArrayList<>();
 
         PreparedStatement statement = connection.prepareStatement(query);
@@ -67,7 +67,7 @@ public class ProductDAO {
         if(lasts.size() < 5){
 
             Queue<Product> randomProducts;
-            randomProducts = getFiveRandomProducts();
+            randomProducts = getFiveRandomProducts(lasts);
 
 
             while(!randomProducts.isEmpty() && lasts.size() < 5){
@@ -95,11 +95,25 @@ public class ProductDAO {
         return resultSet.getString("Foto");
     }
 
-    public Queue<Product> getFiveRandomProducts() throws SQLException{
-        String query = "SELECT * FROM prodotto ORDER BY RAND() LIMIT 5";
+    public Queue<Product> getFiveRandomProducts(List<Product> notIn) throws SQLException{
+        String query = "SELECT * FROM prodotto P WHERE P.Categoria='Tech' AND P.Codice in (SELECT CodiceProdotto FROM prodottodafornitore) ";
+        if(!notIn.isEmpty()){
+            query += " AND P.Codice NOT IN (";
+                for(int  i = 0; i <= notIn.size();i++){
+                    query += " ? ";
+                    if( i != notIn.size()-1) query += ", ";
+                }
+            query += " ) ";
+        }
+        query += " ORDER BY RAND() LIMIT 5";
+
         Queue<Product> lasts = new LinkedList<>();
         PreparedStatement statement = connection.prepareStatement(query);
         ResultSet resultSet = statement.executeQuery();
+
+        for(int  i = 0; i < notIn.size();i++){
+            statement.setInt(i+1, notIn.get(i).codice());
+        }
 
         if(!resultSet.isBeforeFirst()){
             return lasts;
