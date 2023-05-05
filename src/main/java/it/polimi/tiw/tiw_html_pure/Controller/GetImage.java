@@ -17,8 +17,10 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.sql.Connection;
@@ -71,8 +73,23 @@ public class GetImage extends HttpServlet {
         File file = new File(this.basePath, relativePath);
 
         if (!file.exists() || file.isDirectory()) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving Fotopath from DB");
+
+            InputStream inputStream = getServletContext().getResourceAsStream("/WEB-INF/imgs/not-found-icon.png");
+            // Creare un ByteArrayOutputStream per scrivere l'input stream in memoria
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            // Scrivere l'input stream nel ByteArrayOutputStream
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            response.setContentType("image/png");
+            response.setContentLength(outputStream.size());
+            response.setHeader("Content-Disposition", "inline; filename=notfound.png");
+            response.getOutputStream().write(outputStream.toByteArray());
             return;
+
         }
 
         response.setHeader("Content-Type", getServletContext().getMimeType(relativePath));
