@@ -61,6 +61,7 @@ public class Home extends HttpServlet {
 
 
         ctx.setVariable("products", menuProducts);
+        response.setCharacterEncoding("UTF-8");
         try{
             this.templateEngine.process("home",ctx, response.getWriter());
         }catch (Exception ex){

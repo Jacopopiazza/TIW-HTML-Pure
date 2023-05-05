@@ -24,6 +24,7 @@ public class Logout extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.getSession(false).invalidate();
 
+        resp.setCharacterEncoding("UTF-8");
         resp.sendRedirect(getServletContext().getContextPath() + "/login");
     }
 

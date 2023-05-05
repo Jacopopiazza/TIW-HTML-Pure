@@ -67,6 +67,7 @@ public class Signup extends HttpServlet {
                 ctx.setVariable("error", errorMsg);
             }
 
+            response.setCharacterEncoding("UTF-8");
             this.templateEngine.process("register",ctx, response.getWriter());
         }
 

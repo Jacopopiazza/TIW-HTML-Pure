@@ -113,6 +113,7 @@ public class Risultati extends HttpServlet {
         ctx.setVariable("prodottiAperti" , prodottiAperti);
         ctx.setVariable("queryString", queryString);
 
+        response.setCharacterEncoding("UTF-8");
         try{
             this.templateEngine.process("risultati",ctx, response.getWriter());
         }catch (Exception e){

@@ -80,6 +80,7 @@ public class Ordini extends HttpServlet {
         ctx.setVariable("supplierDAO", new SupplierDAO(connection));
         ctx.setVariable("productDAO", new ProductDAO(connection));
 
+        response.setCharacterEncoding("UTF-8");
         try{
             this.templateEngine.process("ordini",ctx, response.getWriter());
         }catch (Exception ex){

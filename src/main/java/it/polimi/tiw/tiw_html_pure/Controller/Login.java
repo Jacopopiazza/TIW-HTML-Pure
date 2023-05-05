@@ -44,6 +44,7 @@ public class Login extends HttpServlet {
         else if (request.getParameter("success") != null)
             ctx.setVariable("success", true);
 
+        response.setCharacterEncoding("UTF-8");
         this.templateEngine.process("login",ctx, response.getWriter());
     }
 

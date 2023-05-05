@@ -70,6 +70,8 @@ public class Carrello extends HttpServlet {
         ctx.setVariable("supplierDAO", supplierDAO);
         ctx.setVariable("productDAO", productDAO);
 
+
+        response.setCharacterEncoding("UTF-8");
         try{
             this.templateEngine.process("carrello",ctx, response.getWriter());
         }catch(RuntimeException ex){
