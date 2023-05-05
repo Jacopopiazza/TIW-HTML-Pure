@@ -107,6 +107,11 @@ public class Ordini extends HttpServlet {
             return;
         }
 
+        if(codiceFornitore < 0){
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter");
+            return;
+        }
+
         //Create needed objects
         CartDAO cartDAO = new CartDAO(request.getSession(false), connection);
         ProductDAO productDAO = new ProductDAO(connection);

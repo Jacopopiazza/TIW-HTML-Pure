@@ -61,6 +61,11 @@ public class ProdottoVisualizzato extends HttpServlet {
             return;
         }
 
+        if(codiceProdottoVisualizzato < 0){
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter");
+            return;
+        }
+
         HttpSession session = req.getSession(false);
         User user = (User)session.getAttribute("user");
         ProductDAO productDAO = new ProductDAO(connection);
