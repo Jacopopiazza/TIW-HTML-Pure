@@ -38,8 +38,34 @@ public class Signup extends HttpServlet {
             final IWebExchange webExchange = this.application.buildExchange(request, response);
             final WebContext ctx = new WebContext(webExchange, request.getLocale());
 
-            if (request.getParameter("error") != null)
-                ctx.setVariable("error", request.getParameter("error"));
+            if (request.getParameter("error") != null) {
+                Integer errorCode;
+                String errorMsg = "";
+                try {
+                    errorCode = Integer.parseInt(request.getParameter("error"));
+                } catch (NumberFormatException ex) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid error parameter");
+                    return;
+                }
+                switch (errorCode) {
+                    case 1:
+                        errorMsg = "Tutti i campi vanno compilati";
+                        break;
+                    case 2:
+                        errorMsg = "le password non corrispondono";
+                        break;
+                    case 3:
+                        errorMsg = "indirizzo email non valido";
+                        break;
+                    case 4:
+                        errorMsg = "indirizzo email già registrato";
+                        break;
+                    default:
+                        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid error parameter");
+                        return;
+                }
+                ctx.setVariable("error", errorMsg);
+            }
 
             this.templateEngine.process("register",ctx, response.getWriter());
         }
@@ -58,7 +84,7 @@ public class Signup extends HttpServlet {
             String cap = req.getParameter("cap");
             String stato = req.getParameter("stato");
 
-            String errorMsg = "";
+
 
 
             if (email == null || email.isEmpty() || password == null || password.isEmpty() ||
@@ -67,23 +93,23 @@ public class Signup extends HttpServlet {
                 civico == null || civico.isEmpty() || citta == null || citta.isEmpty() ||
                 provincia == null || provincia.isEmpty() || cap == null || cap.isEmpty() ||
                  stato == null || stato.isEmpty()){
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "No field can be empty");
+                resp.sendRedirect(getServletContext().getContextPath() + "/register?error=1");
                 return;
             }
 
             if(!password.equals(confPassowrd)){
-                resp.sendRedirect(getServletContext().getContextPath() + "/register?error=" + "le password non corrispondono");
+                resp.sendRedirect(getServletContext().getContextPath() + "/register?error=2");
                 return;
             }
 
             UserDAO userDAO = new UserDAO(connection);
             try {
                 if ( !UserDAO.isValidEmail(email) ) {
-                    resp.sendRedirect(getServletContext().getContextPath() + "/register?error=" + "indirizzo email non valido");
+                    resp.sendRedirect(getServletContext().getContextPath() + "/register?error=3");
                     return;
                 }
                 if( userDAO.doesEmailExist(email)){
-                    resp.sendRedirect(getServletContext().getContextPath() + "/register?error=" + "indirizzo email già registrato");
+                    resp.sendRedirect(getServletContext().getContextPath() + "/register?error=4" );
                     return;
                 }
                 userDAO.createUser(email,nome,cognome,password,via,civico,cap,citta,stato,provincia);

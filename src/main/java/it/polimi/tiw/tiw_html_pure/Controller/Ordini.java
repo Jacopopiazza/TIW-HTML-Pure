@@ -50,6 +50,17 @@ public class Ordini extends HttpServlet {
         OrderDAO orderDAO = new OrderDAO(connection);
 
         User user = (User)session.getAttribute("user");
+        List<Product> menuProducts;
+        try {
+            menuProducts = new ProductDAO(connection).getMenuProductsForUser( user.email() );
+        }catch (SQLException e){
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while retriving products for the menu");
+            return;
+        }
+
+        ctx.setVariable("products", menuProducts);
+
         List<Order> ordini;
 
         try {

@@ -11,9 +11,9 @@
     </head>
     <body>
 
-    <div th:insert="@{fragments/fragments.html} :: navbar"></div>
+    <div th:insert="@{fragments/fragments.html} :: navbar (products = ${products})"></div>
 
-    <h2 th:if="${products.isEmpty()}">No products in DB</h2>
+    <!--<h2 th:if="${products.isEmpty()}">No products in DB</h2>
     <h2 th:if="${!products.isEmpty()}">Hai visto di recente o potrebbe interessarti:</h2>
     <br/>
     <div class="card-container">
@@ -24,7 +24,7 @@
                 <p th:text="${'Nome Prodotto: ' + prod.nome()}"></p>
             </div>
         </div>
-    </div>
+    </div>-->
 
     </body>
 </html>

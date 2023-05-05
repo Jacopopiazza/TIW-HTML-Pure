@@ -11,7 +11,7 @@
     </head>
     <body>
 
-        <div th:insert="@{fragments/fragments.html} :: navbar"></div>
+        <div th:insert="@{fragments/fragments.html} :: navbar (products = ${products})"></div>
 
         <div>
             <p th:if="${risultati.isEmpty()}">Nessun risultato corrisponde alla ricerca...</p>

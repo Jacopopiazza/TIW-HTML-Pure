@@ -4,14 +4,14 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>Home</title>
+        <title>Carrello</title>
         <link rel="stylesheet" type="text/css" media="all"
               href="../css/stylesheet.css" th:href="@{/css/stylesheet.css}" />
 
     </head>
     <body>
 
-    <div th:insert="@{fragments/fragments.html} :: navbar"></div>
+    <div th:insert="@{fragments/fragments.html} :: navbar (products = ${products})"></div>
 
 
     <div>

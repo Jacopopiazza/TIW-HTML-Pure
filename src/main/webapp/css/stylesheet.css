@@ -26,7 +26,7 @@
     background-color: #111;
 }
 
-.navbar form:last-child {
+.navbar form {
     margin-left: auto;
     padding: 14px 16px;
 }
