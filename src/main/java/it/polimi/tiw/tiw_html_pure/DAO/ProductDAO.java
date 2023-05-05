@@ -99,7 +99,7 @@ public class ProductDAO {
         String query = "SELECT * FROM prodotto P WHERE P.Categoria='Tech' AND P.Codice in (SELECT CodiceProdotto FROM prodottodafornitore) ";
         if(!notIn.isEmpty()){
             query += " AND P.Codice NOT IN (";
-                for(int  i = 0; i <= notIn.size();i++){
+                for(int  i = 0; i < notIn.size();i++){
                     query += " ? ";
                     if( i != notIn.size()-1) query += ", ";
                 }
