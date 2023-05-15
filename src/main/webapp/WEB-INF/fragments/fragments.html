@@ -4,18 +4,11 @@
 
     <body>
         <!--/*  declare parameterized fragment called "navbar" */-->
-        <div th:fragment="navbar(products)" class="navbar">
+        <div th:fragment="navbar" class="navbar">
                 <a th:href="@{/home}">Home</a>
                 <a th:href="@{/ordini}">Ordini</a>
                 <a th:href="@{/carrello}">Carrello</a>
 
-                <a th:if="${products.isEmpty()}">No products to show.</a>
-                <a class="no-hover" th:if="${!products.isEmpty()}">Hai visto:</a>
-                <a th:each="prod : ${products}" class="no-hover" th:if="${!products.isEmpty()}" th:text="${prod.Codice} + '. ' + ${prod.Nome}" >1. Primo Prodotto</a>
-
-                <form action="#" th:action="@{/risultati}" method="GET">
-                    <input type="text" placeholder="Cerca..." name="queryString" required />
-                </form>
                 <form th:action="@{/logout}"  method="POST">
                     <input type="submit" value="Log out">
                 </form>

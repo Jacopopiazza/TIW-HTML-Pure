@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
-import org.thymeleaf.standard.processor.StandardInlineEnablementTemplateBoundariesProcessor;
 import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
@@ -25,10 +24,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @WebServlet(name ="Risultati", value = "/risultati", loadOnStartup = 1)
-public class Risultati extends HttpServlet {
+public class Results extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
     private JakartaServletWebApplication application;
@@ -77,7 +75,7 @@ public class Risultati extends HttpServlet {
 
         List<Product> menuProducts;
         try {
-            menuProducts = productDAO.getMenuProductsForUser( user.email() );
+            menuProducts = productDAO.getLastFiveViewedProductsForUser( user.email() );
         }catch (SQLException e){
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while retriving products for the menu");

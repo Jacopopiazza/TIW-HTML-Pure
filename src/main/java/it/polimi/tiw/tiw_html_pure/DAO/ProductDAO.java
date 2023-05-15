@@ -2,7 +2,6 @@ package it.polimi.tiw.tiw_html_pure.DAO;
 
 import it.polimi.tiw.tiw_html_pure.Bean.Product;
 import it.polimi.tiw.tiw_html_pure.Bean.User;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -41,7 +40,7 @@ public class ProductDAO {
         return null;
     }
 
-    public List<Product> getMenuProductsForUser(String email)throws SQLException {
+    public List<Product> getLastFiveViewedProductsForUser(String email)throws SQLException {
 
         String query = "SELECT P.*, Timestamp FROM db_tiw.visualizzazioni v1 INNER JOIN prodotto P on P.Codice=v1.CodiceProdotto WHERE Timestamp = (SELECT MAX(Timestamp) FROM visualizzazioni v2 WHERE P.Codice in (SELECT CodiceProdotto FROM prodottodafornitore) AND v2.EmailUtente=? AND v2.CodiceProdotto=v1.CodiceProdotto) ORDER BY Timestamp DESC LIMIT 5;";
         List<Product> lasts = new ArrayList<>();
@@ -95,7 +94,7 @@ public class ProductDAO {
         return resultSet.getString("Foto");
     }
 
-    public Queue<Product> getFiveRandomProducts(List<Product> notIn) throws SQLException{
+    private Queue<Product> getFiveRandomProducts(List<Product> notIn) throws SQLException{
         String query = "SELECT * FROM prodotto P WHERE P.Categoria='Tech' AND P.Codice in (SELECT CodiceProdotto FROM prodottodafornitore) ";
         if(!notIn.isEmpty()){
             query += " AND P.Codice NOT IN (";
@@ -163,7 +162,7 @@ public class ProductDAO {
         return prods;
     }
 
-    public void prodottoVisualizzato(User user, int codiceProdotto) throws SQLException{
+    public void markProductAsViewdByUser(User user, int codiceProdotto) throws SQLException{
         String query = "INSERT into visualizzazioni (EmailUtente, CodiceProdotto)   VALUES(?, ?)";
         PreparedStatement pstatement = connection.prepareStatement(query);
         pstatement.setString(1, user.email());
@@ -197,5 +196,6 @@ public class ProductDAO {
 
         return resultSet.getInt("Prezzo");
     }
+
 
 }

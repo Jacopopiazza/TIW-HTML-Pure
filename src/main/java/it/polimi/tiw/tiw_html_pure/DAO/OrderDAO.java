@@ -59,7 +59,7 @@ public class OrderDAO {
         return ordini;
     }
 
-    public void createOrder(User user,int codiceFornitore, int speseSpedizione, int totaleOrdine, Map<Integer, Integer> prodottiOrdine, String NomeFornitore) throws SQLException {
+    public void createOrder(User user,int codiceFornitore, int speseSpedizione, int totaleOrdine, Map<Integer, Integer> prodottiOrdine) throws SQLException {
 
         connection.setAutoCommit(false);
 

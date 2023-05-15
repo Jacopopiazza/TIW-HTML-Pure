@@ -11,7 +11,7 @@
     </head>
     <body>
 
-        <div th:insert="@{fragments/fragments.html} :: navbar (products = ${products})"></div>
+        <div th:insert="@{fragments/fragments.html} :: navbar"></div>
 
         <div>
             <p th:if="${ordini.isEmpty()}">Non hai ancora effettuato alcun ordine.</p>

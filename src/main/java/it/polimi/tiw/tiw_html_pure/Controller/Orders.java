@@ -23,12 +23,11 @@ import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 @WebServlet(name ="Ordini", value = "/ordini")
-public class Ordini extends HttpServlet {
+public class Orders extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
     private JakartaServletWebApplication application;
@@ -46,13 +45,12 @@ public class Ordini extends HttpServlet {
         final WebContext ctx = new WebContext(webExchange, request.getLocale());
 
         HttpSession session = request.getSession(false);
-        CartDAO cartDAO = new CartDAO(session, connection);
         OrderDAO orderDAO = new OrderDAO(connection);
 
         User user = (User)session.getAttribute("user");
         List<Product> menuProducts;
         try {
-            menuProducts = new ProductDAO(connection).getMenuProductsForUser( user.email() );
+            menuProducts = new ProductDAO(connection).getLastFiveViewedProductsForUser( user.email() );
         }catch (SQLException e){
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while retriving products for the menu");
@@ -188,7 +186,7 @@ public class Ordini extends HttpServlet {
         User user = (User)request.getSession(false).getAttribute("user");
 
         try{
-            orderDAO.createOrder(user, codiceFornitore, speseSpedizione, subTotale, prodottiPerOrdine, supplier.getNome());
+            orderDAO.createOrder(user, codiceFornitore, speseSpedizione, subTotale, prodottiPerOrdine);
         }catch (SQLException ex){
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating the order\n." + ex.getMessage());
             return;

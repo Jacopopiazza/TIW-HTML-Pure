@@ -1,8 +1,6 @@
 package it.polimi.tiw.tiw_html_pure.Controller;
 
 import it.polimi.tiw.tiw_html_pure.Bean.Product;
-import it.polimi.tiw.tiw_html_pure.Bean.ProductBySupplier;
-import it.polimi.tiw.tiw_html_pure.Bean.Supplier;
 import it.polimi.tiw.tiw_html_pure.Bean.User;
 import it.polimi.tiw.tiw_html_pure.DAO.CartDAO;
 import it.polimi.tiw.tiw_html_pure.DAO.ProductDAO;
@@ -17,22 +15,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
 import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @WebServlet(name ="Carrello", value = "/carrello")
-public class Carrello extends HttpServlet {
+public class Cart extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
     private JakartaServletWebApplication application;
@@ -55,7 +47,7 @@ public class Carrello extends HttpServlet {
         User user = (User)session.getAttribute("user");
         List<Product> menuProducts;
         try {
-            menuProducts = productDAO.getMenuProductsForUser( user.email() );
+            menuProducts = productDAO.getLastFiveViewedProductsForUser( user.email() );
         }catch (SQLException e){
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while retriving products for the menu");

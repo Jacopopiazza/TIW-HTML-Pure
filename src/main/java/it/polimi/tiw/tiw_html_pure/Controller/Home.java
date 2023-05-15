@@ -3,7 +3,6 @@ package it.polimi.tiw.tiw_html_pure.Controller;
 import it.polimi.tiw.tiw_html_pure.Bean.Product;
 import it.polimi.tiw.tiw_html_pure.Bean.User;
 import it.polimi.tiw.tiw_html_pure.DAO.ProductDAO;
-import it.polimi.tiw.tiw_html_pure.DAO.UserDAO;
 import it.polimi.tiw.tiw_html_pure.Utilities.ConnectionFactory;
 import it.polimi.tiw.tiw_html_pure.Utilities.TemplateFactory;
 import jakarta.servlet.ServletException;
@@ -15,8 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.WebApplicationTemplateResolver;
 import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
@@ -24,7 +21,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Queue;
 
 @WebServlet(name = "Home", value= "/home")
 public class Home extends HttpServlet {
@@ -49,9 +45,9 @@ public class Home extends HttpServlet {
         ProductDAO productDAO = new ProductDAO(connection);
 
         User user = (User)session.getAttribute("user");
-        List<Product> menuProducts;
+        List<Product> lastViewedProducts;
         try {
-            menuProducts = productDAO.getMenuProductsForUser( user.email() );
+            lastViewedProducts = productDAO.getLastFiveViewedProductsForUser( user.email() );
         }catch (SQLException e){
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while retriving products for the menu");
@@ -60,7 +56,7 @@ public class Home extends HttpServlet {
 
 
 
-        ctx.setVariable("products", menuProducts);
+        ctx.setVariable("products", lastViewedProducts);
         response.setCharacterEncoding("UTF-8");
         try{
             this.templateEngine.process("home",ctx, response.getWriter());

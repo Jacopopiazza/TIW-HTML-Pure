@@ -1,12 +1,9 @@
 package it.polimi.tiw.tiw_html_pure.Controller;
 
-import it.polimi.tiw.tiw_html_pure.Bean.Product;
 import it.polimi.tiw.tiw_html_pure.Bean.User;
 import it.polimi.tiw.tiw_html_pure.DAO.ProductDAO;
-import it.polimi.tiw.tiw_html_pure.DAO.UserDAO;
 import it.polimi.tiw.tiw_html_pure.Utilities.ConnectionFactory;
 import it.polimi.tiw.tiw_html_pure.Utilities.TemplateFactory;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.UnavailableException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,8 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.IOException;
@@ -23,7 +18,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @WebServlet(name="ProdottoVisualizzato", value="/visualizza")
-public class ProdottoVisualizzato extends HttpServlet {
+public class ViewProduct extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
@@ -71,7 +66,7 @@ public class ProdottoVisualizzato extends HttpServlet {
         ProductDAO productDAO = new ProductDAO(connection);
 
         try{
-            productDAO.prodottoVisualizzato(user, codiceProdottoVisualizzato);
+            productDAO.markProductAsViewdByUser(user, codiceProdottoVisualizzato);
         }catch(SQLException ex){
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while setting product viewed");
             return;
