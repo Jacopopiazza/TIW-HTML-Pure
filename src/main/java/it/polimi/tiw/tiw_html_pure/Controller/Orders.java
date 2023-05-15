@@ -58,6 +58,8 @@ public class Orders extends HttpServlet {
         final IWebExchange webExchange = this.application.buildExchange(request, response);
         final WebContext ctx = new WebContext(webExchange, request.getLocale());
 
+        request.setCharacterEncoding("UTF-8");
+
         HttpSession session = request.getSession(false);
         OrderDAO orderDAO = new OrderDAO(connection);
 
@@ -104,6 +106,8 @@ public class Orders extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        request.setCharacterEncoding("UTF-8");
 
         //Check params
         String sidSupplier = request.getParameter("idSupplier");

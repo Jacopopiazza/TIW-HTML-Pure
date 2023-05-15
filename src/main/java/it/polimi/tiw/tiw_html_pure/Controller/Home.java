@@ -53,6 +53,8 @@ public class Home extends HttpServlet {
         final IWebExchange webExchange = this.application.buildExchange(request, response);
         final WebContext ctx = new WebContext(webExchange, request.getLocale());
 
+        request.setCharacterEncoding("UTF-8");
+
         HttpSession session = request.getSession(false);
         ProductDAO productDAO = new ProductDAO(connection);
 

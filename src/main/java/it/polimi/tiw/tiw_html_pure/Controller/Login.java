@@ -52,6 +52,8 @@ public class Login extends HttpServlet {
         final IWebExchange webExchange = this.application.buildExchange(request, response);
         final WebContext ctx = new WebContext(webExchange, request.getLocale());
 
+        request.setCharacterEncoding("UTF-8");
+
         if (request.getParameter("error") != null)
             ctx.setVariable("error", true);
         else if (request.getParameter("success") != null)
@@ -76,6 +78,9 @@ public class Login extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        req.setCharacterEncoding("UTF-8");
+
         String email = req.getParameter("email");
         String password = req.getParameter("password");
 

@@ -49,6 +49,8 @@ public class Cart extends HttpServlet {
         final IWebExchange webExchange = this.application.buildExchange(request, response);
         final WebContext ctx = new WebContext(webExchange, request.getLocale());
 
+        request.setCharacterEncoding("UTF-8");
+
         HttpSession session = request.getSession(false);
         ProductDAO productDAO = new ProductDAO(connection);
 
@@ -81,6 +83,8 @@ public class Cart extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        req.setCharacterEncoding("UTF-8");
 
         String sidSupplier = req.getParameter("idSupplier"),
                 sidProduct = req.getParameter("idProduct"),

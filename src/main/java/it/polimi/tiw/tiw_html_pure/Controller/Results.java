@@ -57,6 +57,8 @@ public class Results extends HttpServlet {
         final IWebExchange webExchange = this.application.buildExchange(request, response);
         final WebContext ctx = new WebContext(webExchange, request.getLocale());
 
+        request.setCharacterEncoding("UTF-8");
+
         //Check param is there
         String queryString = request.getParameter("queryString");
         if (queryString == null || queryString.isEmpty()) {

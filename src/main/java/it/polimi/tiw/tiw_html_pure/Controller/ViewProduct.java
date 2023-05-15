@@ -45,6 +45,9 @@ public class ViewProduct extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        req.setCharacterEncoding("UTF-8");
+
         String codiceVisualizzato = req.getParameter("visualizzato");
         String[] aperti = req.getParameterValues("aperto");
         String queryString = req.getParameter("queryString");

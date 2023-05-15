@@ -61,6 +61,8 @@ public class GetImage extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        request.setCharacterEncoding("UTF-8");
+
         String idProduct = request.getParameter("idProduct");
         int idProdotto;
         try{
