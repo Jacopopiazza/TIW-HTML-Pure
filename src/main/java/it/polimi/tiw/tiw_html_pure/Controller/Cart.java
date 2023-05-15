@@ -1,6 +1,5 @@
 package it.polimi.tiw.tiw_html_pure.Controller;
 
-import it.polimi.tiw.tiw_html_pure.Bean.Product;
 import it.polimi.tiw.tiw_html_pure.Bean.User;
 import it.polimi.tiw.tiw_html_pure.DAO.CartDAO;
 import it.polimi.tiw.tiw_html_pure.DAO.ProductDAO;
@@ -21,7 +20,6 @@ import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
 @WebServlet(name ="Carrello", value = "/cart")
 public class Cart extends HttpServlet {
@@ -30,12 +28,22 @@ public class Cart extends HttpServlet {
     private JakartaServletWebApplication application;
     private Connection connection;
 
+    /**
+     * Initializes the servlet by building the application and getting a connection to the database.
+     * @throws UnavailableException if the servlet is unable to initialize properly.
+     */
     public void init() throws UnavailableException {
         this.application = JakartaServletWebApplication.buildApplication(getServletContext());
         this.templateEngine = TemplateFactory.getTemplateEngine(this.application);
         this.connection = ConnectionFactory.getConnection(getServletContext());
     }
 
+    /**
+     * Handles the GET request to display the user's cart.
+     * @param request the HTTP request.
+     * @param response the HTTP response.
+     * @throws IOException if an I/O error occurs while processing the request.
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final IWebExchange webExchange = this.application.buildExchange(request, response);
@@ -65,7 +73,12 @@ public class Cart extends HttpServlet {
 
     }
 
-
+    /**
+     * Handles the POST request to add a product to the user's cart.
+     * @param req the HTTP request.
+     * @param resp the HTTP response.
+     * @throws IOException if an I/O error occurs while processing the request.
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
@@ -115,6 +128,9 @@ public class Cart extends HttpServlet {
         resp.sendRedirect(path);
     }
 
+    /**
+     * Close the {@link Connection} to the database.
+     */
     @Override
     public void destroy() {
         try {

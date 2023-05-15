@@ -33,14 +33,28 @@ public class Orders extends HttpServlet {
     private JakartaServletWebApplication application;
     private Connection connection;
 
+    /**
+     * Initializes the servlet by building the application and getting a connection to the database.
+     * @throws UnavailableException if the servlet is unable to initialize properly.
+     */
     public void init() throws UnavailableException {
         this.application = JakartaServletWebApplication.buildApplication(getServletContext());
         this.templateEngine = TemplateFactory.getTemplateEngine(this.application);
         this.connection = ConnectionFactory.getConnection(getServletContext());
     }
 
+    /**
+     * Handles GET requests for the orders page. Retrieves all the orders from the database for the currently logged-in user,
+     * and passes them to the Thymeleaf template engine for rendering.
+     *
+     * @param request the HttpServletRequest object containing the request from the client
+     *
+     * @param response the HttpServletResponse object for sending the response to the client
+     *
+     * @throws IOException if an error occurs while writing the response
+     */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final IWebExchange webExchange = this.application.buildExchange(request, response);
         final WebContext ctx = new WebContext(webExchange, request.getLocale());
 
@@ -77,7 +91,18 @@ public class Orders extends HttpServlet {
         }
 
     }
-        @Override
+
+    /**
+     * Handles the creation of a new order for a specific supplier based on the current user's cart.
+     * The method retrieves the products added to the cart by the user for the specified supplier and
+     * calculates the total cost of the order, including any delivery costs that may apply. The method then
+     * creates a new order and removes the products from the user's cart for that specific supplier.
+     *
+     * @param request the HTTP servlet request
+     * @param response the HTTP servlet response
+     * @throws IOException if an I/O error occurs while handling the request
+     */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         //Check params
@@ -190,7 +215,10 @@ public class Orders extends HttpServlet {
 
     }
 
-        @Override
+    /**
+     * Close the {@link Connection} to the database.
+     */
+    @Override
     public void destroy() {
         try {
             if (connection != null)

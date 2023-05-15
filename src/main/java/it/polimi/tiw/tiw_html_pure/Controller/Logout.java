@@ -17,9 +17,16 @@ import java.sql.Connection;
 public class Logout extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    public void init() throws UnavailableException {
-
-    }
+    /**
+     *
+     * Handles HTTP POST requests to logout the user by invalidating the session and redirecting to the login page.
+     *
+     * @param req the HTTP servlet request object
+     *
+     * @param resp the HTTP servlet response object
+     *
+     * @throws IOException if an I/O error occurs
+     */
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.getSession(false).invalidate();
@@ -28,7 +35,5 @@ public class Logout extends HttpServlet {
         resp.sendRedirect(getServletContext().getContextPath() + "/login");
     }
 
-    public void destroy() {
 
-    }
 }

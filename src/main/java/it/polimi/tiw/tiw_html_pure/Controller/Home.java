@@ -30,14 +30,26 @@ public class Home extends HttpServlet {
     private JakartaServletWebApplication application;
     private Connection connection;
 
+    /**
+     * Initializes the servlet by building the application and getting a connection to the database.
+     * @throws UnavailableException if the servlet is unable to initialize properly.
+     */
     public void init() throws UnavailableException {
         this.application = JakartaServletWebApplication.buildApplication(getServletContext());
         this.templateEngine = TemplateFactory.getTemplateEngine(this.application);
         this.connection = ConnectionFactory.getConnection(getServletContext());
     }
 
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    /**
+     * Handles the GET request for the home page. Retrieves the last five viewed products for the user
+     * from the database and sets them as a request attribute to be displayed in the view. Renders the
+     * view using Thymeleaf template engine.
+     *
+     * @param request the HTTP servlet request
+     * @param response the HTTP servlet response
+     * @throws IOException if there is an I/O problem
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final IWebExchange webExchange = this.application.buildExchange(request, response);
         final WebContext ctx = new WebContext(webExchange, request.getLocale());
 
@@ -54,21 +66,16 @@ public class Home extends HttpServlet {
             return;
         }
 
-
-
         ctx.setVariable("products", lastViewedProducts);
+
         response.setCharacterEncoding("UTF-8");
+
         try{
             this.templateEngine.process("home",ctx, response.getWriter());
         }catch (Exception ex){
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
         }
 
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        //DO NOTHING
     }
 
     /**

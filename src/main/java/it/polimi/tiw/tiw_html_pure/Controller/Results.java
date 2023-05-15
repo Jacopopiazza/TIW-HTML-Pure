@@ -32,13 +32,28 @@ public class Results extends HttpServlet {
     private JakartaServletWebApplication application;
     private Connection connection;
 
+    /**
+     * Initializes the servlet by building the application and getting a connection to the database.
+     * @throws UnavailableException if the servlet is unable to initialize properly.
+     */
     public void init() throws UnavailableException {
         this.application = JakartaServletWebApplication.buildApplication(getServletContext());
         this.templateEngine = TemplateFactory.getTemplateEngine(this.application);
         this.connection = ConnectionFactory.getConnection(getServletContext());
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    /**
+     * Handles HTTP GET requests for the "risultati" page, displaying a list of products matching a search query.
+     * If the query string parameter is missing, redirects to the home page.
+     * If the "aperto" parameter is present, displays the prices for that product from all suppliers.
+     * Populates the Thymeleaf template with the search results, open products, and the user's shopping cart.
+     *
+     * @param request the HTTP request from the client
+     * @param response the HTTP response from the server
+     * @throws IOException if there is an error with the I/O operations
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final IWebExchange webExchange = this.application.buildExchange(request, response);
         final WebContext ctx = new WebContext(webExchange, request.getLocale());
 
@@ -110,6 +125,9 @@ public class Results extends HttpServlet {
         }
     }
 
+    /**
+     * Close the {@link Connection} to the database.
+     */
     @Override
     public void destroy() {
         try {

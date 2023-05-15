@@ -27,12 +27,25 @@ public class Signup extends HttpServlet {
         private JakartaServletWebApplication application;
         private Connection connection;
 
+        /**
+        * Initializes the servlet by building the application and getting a connection to the database.
+        * @throws UnavailableException if the servlet is unable to initialize properly.
+        */
+
         public void init() throws UnavailableException {
             this.application = JakartaServletWebApplication.buildApplication(getServletContext());
             this.templateEngine = TemplateFactory.getTemplateEngine(this.application);
             this.connection = ConnectionFactory.getConnection(getServletContext());
         }
 
+        /**
+         * Handles GET requests for the registration page.
+         *
+         * @param request the HttpServletRequest containing the request data
+         * @param response the HttpServletResponse to be sent back to the client
+         * @throws ServletException if there is an error processing the request
+         * @throws IOException if there is an I/O error while handling the request
+         */
 
         protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
             final IWebExchange webExchange = this.application.buildExchange(request, response);
@@ -71,6 +84,14 @@ public class Signup extends HttpServlet {
             this.templateEngine.process("register",ctx, response.getWriter());
         }
 
+        /**
+         * Handles the registration form submission by validating the input fields and creating a new user in the database.
+         * Redirects to the login page upon successful registration.
+         *
+         * @param req the HTTP servlet request containing the registration form data
+         * @param resp the HTTP servlet response used to redirect the user upon success or error
+         * @throws IOException if an I/O error occurs while sending the response
+         */
         @Override
         protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
             String email = req.getParameter("email");

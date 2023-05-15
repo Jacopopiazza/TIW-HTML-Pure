@@ -35,16 +35,31 @@ public class GetImage extends HttpServlet {
     private JakartaServletWebApplication application;
     private Connection connection;
 
+    /**
+     * Initializes the servlet by building the application and getting a connection to the database.
+     * @throws UnavailableException if the servlet is unable to initialize properly.
+     */
+
     public void init() throws UnavailableException {
         this.application = JakartaServletWebApplication.buildApplication(getServletContext());
-        //this.templateEngine = TemplateFactory.getTemplateEngine(this.application);
         this.connection = ConnectionFactory.getConnection(getServletContext());
 
         this.basePath = getServletContext().getInitParameter("imagesPath");
     }
 
+    /**
+     *
+     * This method handles GET requests and retrieves the image file specified by the provided idProduct parameter,
+     * by using the ProductDAO class to retrieve the relative path of the image file and serving it to the response.
+     * If an error occurs, an appropriate error message is sent to the client.
+     *
+     * @param request The HttpServletRequest object representing the incoming request.
+     * @param response The HttpServletResponse object representing the outgoing response.
+     * @throws IOException if an I/O error occurs while handling the request.
+     */
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String idProduct = request.getParameter("idProduct");
         int idProdotto;

@@ -25,12 +25,24 @@ public class ViewProduct extends HttpServlet {
     private JakartaServletWebApplication application;
     private Connection connection;
 
+    /**
+     * Initializes the servlet by building the application and getting a connection to the database.
+     * @throws UnavailableException if the servlet is unable to initialize properly.
+     */
     public void init() throws UnavailableException {
         this.application = JakartaServletWebApplication.buildApplication(getServletContext());
         this.templateEngine = TemplateFactory.getTemplateEngine(this.application);
         this.connection = ConnectionFactory.getConnection(getServletContext());
     }
 
+    /**
+     * Handles the POST request coming from a user's interaction with a product visualization, by marking the product as viewed by
+     * the user and returning to the search results page, filtered by the opened products.
+     *
+     * @param req the HttpServletRequest object containing the information sent by the client.
+     * @param resp the HttpServletResponse object used to send data back to the client.
+     * @throws IOException if an error occurs during the process of sending the response to the client.
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String codiceVisualizzato = req.getParameter("visualizzato");
