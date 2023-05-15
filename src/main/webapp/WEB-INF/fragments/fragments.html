@@ -6,8 +6,8 @@
         <!--/*  declare parameterized fragment called "navbar" */-->
         <div th:fragment="navbar" class="navbar">
                 <a th:href="@{/home}">Home</a>
-                <a th:href="@{/ordini}">Ordini</a>
-                <a th:href="@{/carrello}">Carrello</a>
+                <a th:href="@{/orders}">Ordini</a>
+                <a th:href="@{/cart}">Carrello</a>
 
                 <form th:action="@{/logout}"  method="POST">
                     <input type="submit" value="Log out">

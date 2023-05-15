@@ -23,7 +23,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet(name ="Carrello", value = "/carrello")
+@WebServlet(name ="Carrello", value = "/cart")
 public class Cart extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
@@ -45,20 +45,12 @@ public class Cart extends HttpServlet {
         ProductDAO productDAO = new ProductDAO(connection);
 
         User user = (User)session.getAttribute("user");
-        List<Product> menuProducts;
-        try {
-            menuProducts = productDAO.getLastFiveViewedProductsForUser( user.email() );
-        }catch (SQLException e){
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while retriving products for the menu");
-            return;
-        }
+
 
         CartDAO cartDAO = new CartDAO(session,connection);
         SupplierDAO supplierDAO = new SupplierDAO(connection);
 
         ctx.setVariable("cart", cartDAO.getCart());
-        ctx.setVariable("products", menuProducts);
         ctx.setVariable("supplierDAO", supplierDAO);
         ctx.setVariable("productDAO", productDAO);
 
@@ -77,29 +69,29 @@ public class Cart extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-        String sCodiceFornitore = req.getParameter("codiceFornitore"),
-                sCodiceProdotto = req.getParameter("codiceProdotto"),
-                sQuantita = req.getParameter("quantita");
+        String sidSupplier = req.getParameter("idSupplier"),
+                sidProduct = req.getParameter("idProduct"),
+                samount = req.getParameter("amount");
 
 
-        if(sCodiceFornitore == null || sCodiceFornitore.isEmpty() ||
-                sCodiceProdotto == null || sCodiceProdotto.isEmpty() ||
-                sQuantita == null || sQuantita.isEmpty()){
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter");
+        if(sidSupplier == null || sidSupplier.isEmpty() ||
+                sidProduct == null || sidProduct.isEmpty() ||
+                samount == null || samount.isEmpty()){
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter provided");
             return;
         }
-        int codiceFornitore, codiceProdotto, quantita;
+        int idSupplier, idProduct, amount;
 
         try{
-            codiceFornitore = Integer.parseInt(sCodiceFornitore);
-            codiceProdotto = Integer.parseInt(sCodiceProdotto);
-            quantita = Integer.parseInt(sQuantita);
+            idSupplier = Integer.parseInt(sidSupplier);
+            idProduct = Integer.parseInt(sidProduct);
+            amount = Integer.parseInt(samount);
         }catch(NumberFormatException ex){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter");
             return;
         }
 
-        if(quantita <= 0){
+        if(amount <= 0){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter");
             return;
         }
@@ -107,7 +99,7 @@ public class Cart extends HttpServlet {
         ProductDAO productDAO = new ProductDAO(connection);
 
         try{
-            if(!productDAO.checkProductHasSupplier(codiceProdotto,codiceFornitore)){
+            if(!productDAO.checkProductHasSupplier(idProduct,idSupplier)){
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter");
                 return;
             }
@@ -117,9 +109,9 @@ public class Cart extends HttpServlet {
         }
 
         CartDAO cartDAO = new CartDAO(req.getSession(false), this.connection);
-        cartDAO.addProductToCart(codiceProdotto, codiceFornitore, quantita);
+        cartDAO.addProductToCart(idProduct, idSupplier, amount);
 
-        String path = getServletContext().getContextPath() + "/carrello";
+        String path = getServletContext().getContextPath() + "/cart";
         resp.sendRedirect(path);
     }
 

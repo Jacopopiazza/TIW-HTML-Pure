@@ -24,9 +24,9 @@
 
                 <div class="order-heading">
                     <h3 th:text="${fornitore.getNome()}"></h3>
-                    <form th:action="@{/ordini}" method="POST">
+                    <form th:action="@{/orders}" method="POST">
                         <input type="submit" value="Ordina!"/>
-                        <input type="hidden" name="codiceFornitore" th:value="${fornitore.codice}"/>
+                        <input type="hidden" name="idSupplier" th:value="${fornitore.codice}"/>
                     </form>
                 </div>
                 <br/>
@@ -42,7 +42,7 @@
                     <tbody>
                         <tr th:each=" entryProdotto : ${entryCarrello.getValue().entrySet()}" th:with=" prodotto = ${productDAO.getProduct(entryProdotto.getKey())}">
                             <td th:text="${prodotto.nome()}"></td>
-                            <td><img th:src="@{${'/image?codiceProdotto=' + prodotto.codice}}"/></td>
+                            <td><img th:src="@{${'/image?idProduct=' + prodotto.codice}}"/></td>
                             <td th:text="${entryProdotto.getValue()}"></td>
                             <td th:text="${productDAO.getPriceForProductFromSupplier(prodotto.codice,fornitore.codice) / 100.00 + ' €'}"></td>
 

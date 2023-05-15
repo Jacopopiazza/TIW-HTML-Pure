@@ -18,12 +18,11 @@ public class UserDAO {
 
     public boolean doesEmailExist(String email) throws SQLException {
         String query = "SELECT Email FROM utente WHERE Email = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, email);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                return resultSet.isBeforeFirst();
-            }
-        }
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, email);
+        ResultSet resultSet = statement.executeQuery();
+        return resultSet.isBeforeFirst();
+
     }
 
     public void createUser(String email, String nome, String cognome, String password, String via, String civico, String CAP, String citta, String stato, String provincia) throws SQLException{

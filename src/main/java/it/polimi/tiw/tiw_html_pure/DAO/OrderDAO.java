@@ -2,7 +2,6 @@ package it.polimi.tiw.tiw_html_pure.DAO;
 
 import it.polimi.tiw.tiw_html_pure.Bean.Order;
 import it.polimi.tiw.tiw_html_pure.Bean.OrderDetail;
-import it.polimi.tiw.tiw_html_pure.Bean.Product;
 import it.polimi.tiw.tiw_html_pure.Bean.User;
 
 import java.sql.*;
@@ -59,14 +58,14 @@ public class OrderDAO {
         return ordini;
     }
 
-    public void createOrder(User user,int codiceFornitore, int speseSpedizione, int totaleOrdine, Map<Integer, Integer> prodottiOrdine) throws SQLException {
+    public void createOrder(User user,int idSupplier, int speseSpedizione, int totaleOrdine, Map<Integer, Integer> prodottiOrdine) throws SQLException {
 
         connection.setAutoCommit(false);
 
         try {
             String query = "INSERT INTO ordine (CodiceFornitore, SpeseSpedizione, Via, Civico, CAP, Citta, Stato, Provincia, EmailUtente, TotaleOrdine) VALUES (?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement stmt1 = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            stmt1.setInt(1, codiceFornitore);
+            stmt1.setInt(1, idSupplier);
             stmt1.setInt(2, speseSpedizione);
             stmt1.setString(3, user.via());
             stmt1.setString(4, user.civico());
@@ -97,11 +96,10 @@ public class OrderDAO {
             PreparedStatement stmt2 = connection.prepareStatement(query);
             for(Map.Entry<Integer,Integer> e : prodottiOrdine.entrySet()){
 
-                Product product = new ProductDAO(connection).getProduct(e.getKey());
                 stmt2.setInt(1, id_ordine);
                 stmt2.setInt(2, e.getKey());
                 stmt2.setInt(3, e.getValue());
-                stmt2.setInt(4, new ProductDAO(connection).getPriceForProductFromSupplier(e.getKey(),codiceFornitore));
+                stmt2.setInt(4, new ProductDAO(connection).getPriceForProductFromSupplier(e.getKey(),idSupplier));
 
 
                 int affectedRows2 = stmt2.executeUpdate();

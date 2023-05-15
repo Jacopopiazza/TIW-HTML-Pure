@@ -20,14 +20,14 @@
             <div class="risultati">
                 <ul class="listview">
                     <li class="listview-row" th:if="${!risultati.isEmpty()}" th:each=" risultato : ${risultati.keySet()}">
-                        <form th:action="@{${prodottiAperti.keySet().contains(risultato.codice) ? '/risultati' : '/visualizza'}}" th:method="${prodottiAperti.keySet().contains(risultato.codice) ? 'GET' : 'POST'}">
+                        <form th:action="@{${prodottiAperti.keySet().contains(risultato.codice) ? '/results' : '/viewProduct'}}" th:method="${prodottiAperti.keySet().contains(risultato.codice) ? 'GET' : 'POST'}">
                             <input type="hidden" name="queryString" th:value="${queryString}" />
                             <input th:each=" codice : ${prodottiAperti.keySet()}" th:if="${!codice.equals(risultato.codice)}" type="hidden" name="aperto" th:value="${codice}"/>
                             <input type="hidden" name="visualizzato" th:value="${risultato.codice}" />
                             <input class="listview-row-title" type="submit" th:value="${risultato.codice + ' - ' + risultato.nome + ': ' + risultati.get(risultato) + ' €'}" value="123 - Nome prodotto: 12.00 €">
                         </form>
                         <div th:if="${prodottiAperti.keySet().contains(risultato.codice)}">
-                            <img th:src="@{${'/image?codiceProdotto=' + risultato.codice}}" alt="immagine prodotto"/>
+                            <img th:src="@{${'/image?idProduct=' + risultato.codice}}" alt="immagine prodotto"/>
                             <p th:text="${'Nome: ' + risultato.nome}">Nome prodotto</p>
                             <p th:text="${'Descrizione: ' + risultato.descrizione}">Descrizione prodotto</p>
                             <p th:text="${'Categoria: ' + risultato.categoria}">Categoria prodotto</p>
@@ -58,10 +58,10 @@
                                         <td th:text="${fornitore.getKey().sogliaSpedizioneGratuita != null} ? ${fornitore.getKey().getSogliaSpedizioneGratuita() / 100.00 + ' €'} : ${'Nessuna soglia di spesa per la spedizione gratuita'}">49.99€</td>
                                         <td th:with="info = ${cartDAO.getInformationForSupplier(fornitore.getKey().codice)}" th:text="${info.count() > 0} ? ${info.count() + ' articoli di questo fornitore nel carrello, per un valore di ' + info.value() / 100.00 + ' € totali'} : ${'Nessun prodotto di questo fornitore nel carrello'}"></td>
                                         <td>
-                                            <form th:action="@{/carrello}" method="POST">
-                                                <input type="number" min="0" value="0" name="quantita"/>
-                                                <input type="hidden" th:value="${risultato.codice}" name="codiceProdotto" />
-                                                <input type="hidden" th:value="${fornitore.getKey().codice}" name="codiceFornitore" />
+                                            <form th:action="@{/cart}" method="POST">
+                                                <input type="number" min="0" value="0" name="amount"/>
+                                                <input type="hidden" th:value="${risultato.codice}" name="idProduct" />
+                                                <input type="hidden" th:value="${fornitore.getKey().codice}" name="idSupplier" />
                                                 <input type="submit" value="Metti nel carrello!" />
                                              </form>
                                         </td>

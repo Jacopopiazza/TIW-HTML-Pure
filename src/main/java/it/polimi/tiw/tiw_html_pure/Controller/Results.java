@@ -25,7 +25,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
-@WebServlet(name ="Risultati", value = "/risultati", loadOnStartup = 1)
+@WebServlet(name ="Risultati", value = "/results")
 public class Results extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
@@ -73,15 +73,6 @@ public class Results extends HttpServlet {
         User user = (User)session.getAttribute("user");
         ProductDAO productDAO = new ProductDAO(connection);
 
-        List<Product> menuProducts;
-        try {
-            menuProducts = productDAO.getLastFiveViewedProductsForUser( user.email() );
-        }catch (SQLException e){
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while retriving products for the menu");
-            return;
-        }
-
         //Get results of search
         Map<Product, Double> risultati;
 
@@ -92,7 +83,7 @@ public class Results extends HttpServlet {
             return;
         }
 
-        if(menuProducts == null || risultati == null){
+        if( risultati == null ){
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failure of search of products in database");
             return;
         }
@@ -107,7 +98,6 @@ public class Results extends HttpServlet {
 
         ctx.setVariable("cartDAO", cartDAO);
         ctx.setVariable("risultati", risultati);
-        ctx.setVariable("products", menuProducts);
         ctx.setVariable("prodottiAperti" , prodottiAperti);
         ctx.setVariable("queryString", queryString);
 

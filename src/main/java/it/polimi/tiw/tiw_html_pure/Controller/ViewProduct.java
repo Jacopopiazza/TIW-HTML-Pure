@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@WebServlet(name="ProdottoVisualizzato", value="/visualizza")
+@WebServlet(name="ProdottoVisualizzato", value="/viewProduct")
 public class ViewProduct extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -42,10 +42,10 @@ public class ViewProduct extends HttpServlet {
             return;
         }
 
-        int codiceProdottoVisualizzato;
+        int idProductVisualizzato;
 
         try {
-            codiceProdottoVisualizzato = Integer.parseInt(codiceVisualizzato);
+            idProductVisualizzato = Integer.parseInt(codiceVisualizzato);
             if(aperti != null){
                 for(String s : aperti){
                     Integer.parseInt(s);
@@ -56,7 +56,7 @@ public class ViewProduct extends HttpServlet {
             return;
         }
 
-        if(codiceProdottoVisualizzato < 0){
+        if(idProductVisualizzato < 0){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter");
             return;
         }
@@ -66,17 +66,17 @@ public class ViewProduct extends HttpServlet {
         ProductDAO productDAO = new ProductDAO(connection);
 
         try{
-            productDAO.markProductAsViewdByUser(user, codiceProdottoVisualizzato);
+            productDAO.markProductAsViewdByUser(user, idProductVisualizzato);
         }catch(SQLException ex){
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while setting product viewed");
             return;
         }
 
-        String path = getServletContext().getContextPath() + "/risultati";
+        String path = getServletContext().getContextPath() + "/results";
 
         path += "?queryString=" + queryString;
 
-        path += "&aperto=" + codiceProdottoVisualizzato;
+        path += "&aperto=" + idProductVisualizzato;
 
         if(aperti != null)
             for(String s : aperti){

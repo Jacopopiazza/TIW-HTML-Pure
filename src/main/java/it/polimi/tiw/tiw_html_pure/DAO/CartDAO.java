@@ -1,17 +1,11 @@
 package it.polimi.tiw.tiw_html_pure.DAO;
 
-import com.mysql.cj.conf.ConnectionUrlParser;
 import it.polimi.tiw.tiw_html_pure.Bean.InfoSupplier;
-import it.polimi.tiw.tiw_html_pure.Bean.Product;
-import it.polimi.tiw.tiw_html_pure.Bean.ProductBySupplier;
-import it.polimi.tiw.tiw_html_pure.Bean.Supplier;
-import it.polimi.tiw.tiw_html_pure.Utilities.Pair;
 import jakarta.servlet.http.HttpSession;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CartDAO {
 
@@ -23,49 +17,45 @@ public class CartDAO {
         this.connection = connection;
     }
 
-    public void addProductToCart(int codiceProdotto, int codiceFornitore, int quantita){
+    public void addProductToCart(int idProduct, int idSupplier, int amount){
 
         Map<Integer, Map<Integer, Integer>> carrello = getRealCart();
 
         int old = 0;
 
-        if(!carrello.containsKey(codiceFornitore)){
-            carrello.put(codiceFornitore, new HashMap<>());
+        if(!carrello.containsKey(idSupplier)){
+            carrello.put(idSupplier, new HashMap<>());
         }
 
-        if(carrello.get(codiceFornitore).containsKey(codiceProdotto)){
-            old = carrello.get(codiceFornitore).get(codiceProdotto);
+        if(carrello.get(idSupplier).containsKey(idProduct)){
+            old = carrello.get(idSupplier).get(idProduct);
         }
 
-        carrello.get(codiceFornitore).put(codiceProdotto, old + quantita);
+        carrello.get(idSupplier).put(idProduct, old + amount);
 
     }
 
-    public InfoSupplier getInformationForSupplier(int codiceFornitore) {
+    public InfoSupplier getInformationForSupplier(int idSupplier) {
 
         ProductDAO productDAO = new ProductDAO(connection);
         Map<Integer, Map<Integer, Integer>> carrello = getRealCart();
         int count = 0;
         int value = 0;
 
-        if(!carrello.containsKey(codiceFornitore)) return new InfoSupplier(0,0);
+        if(!carrello.containsKey(idSupplier)) return new InfoSupplier(0,0);
 
-        for(Map.Entry<Integer, Integer> e : carrello.get(codiceFornitore).entrySet()){
+        for(Map.Entry<Integer, Integer> e : carrello.get(idSupplier).entrySet()){
             count += e.getValue();
             try{
-                value += productDAO.getPriceForProductFromSupplier(e.getKey(), codiceFornitore) * e.getValue();
+                value += productDAO.getPriceForProductFromSupplier(e.getKey(), idSupplier) * e.getValue();
             }catch (SQLException ex){
-                System.out.println("Errore nel recupero dei prezzi... controlla");
-                System.out.println("Codice Fornitore: " + codiceFornitore + ", Codice Prodotto: " + e.getKey());
-                System.out.println(ex.getMessage());
                 throw new RuntimeException(ex);
             }
         }
 
 
-        InfoSupplier info = new InfoSupplier(count,value);
+        return new InfoSupplier(count,value);
 
-        return info;
     }
 
     private Map<Integer, Map<Integer, Integer>> getRealCart(){
@@ -78,9 +68,9 @@ public class CartDAO {
         return carrello;
     }
 
-    public void removeProductOfSupplier(int codiceFornitore) {
+    public void removeProductOfSupplier(int idSupplier) {
         Map<Integer, Map<Integer,Integer>> carrello = getRealCart();
-        carrello.remove(codiceFornitore);
+        carrello.remove(idSupplier);
     }
 
     public Map<Integer, Map<Integer, Integer>> getCart(){

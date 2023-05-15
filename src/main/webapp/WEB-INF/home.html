@@ -14,7 +14,7 @@
     <div th:insert="@{fragments/fragments.html} :: navbar"></div>
 
     <div class="searchForm">
-        <form action="#" th:action="@{/risultati}" method="GET">
+        <form action="#" th:action="@{/results}" method="GET">
             <input type="text" placeholder="Cerca..." name="queryString" required />
         </form>
     </div>
@@ -24,7 +24,7 @@
     <br/>
     <div class="card-container">
         <div class="card" style="width: 18rem;" th:if="${!products.isEmpty()}" th:each="prod : ${products}">
-            <img th:src="@{${'/image?codiceProdotto=' + prod.codice}}" class="card-img-top"/>
+            <img th:src="@{${'/image?idProduct=' + prod.codice}}" class="card-img-top"/>
             <div class="card-body">
                 <p th:text="${'Codice: ' + prod.Codice}"></p>
                 <p th:text="${'Nome Prodotto: ' + prod.nome()}"></p>

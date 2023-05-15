@@ -4,24 +4,24 @@ import it.polimi.tiw.tiw_html_pure.DAO.SupplierDAO;
 
 public class DeliveryCost {
     private int id;
-    private int codiceFornitore;
+    private int idSupplier;
     private int numeroMinimoArticoli;
     private Integer numeroMassimoArticoli = null;
     private int prezzoSpedizione;
 
-    public DeliveryCost(int id, int codiceFornitore, int numeroMinimoArticoli, Integer numeroMassimoArticoli, int prezzoSpedizione){
+    public DeliveryCost(int id, int idSupplier, int numeroMinimoArticoli, Integer numeroMassimoArticoli, int prezzoSpedizione){
 
         this.id = id;
-        this.codiceFornitore = codiceFornitore;
+        this.idSupplier = idSupplier;
         this.numeroMinimoArticoli = numeroMinimoArticoli;
         this.numeroMassimoArticoli = numeroMassimoArticoli;
         this.prezzoSpedizione = prezzoSpedizione;
 
     }
 
-    public DeliveryCost(int id, int codiceFornitore, int numeroMinimoArticoli, int prezzoSpedizione){
+    public DeliveryCost(int id, int idSupplier, int numeroMinimoArticoli, int prezzoSpedizione){
 
-        this(id,codiceFornitore,numeroMinimoArticoli,null, prezzoSpedizione);
+        this(id,idSupplier,numeroMinimoArticoli,null, prezzoSpedizione);
 
     }
 
@@ -29,8 +29,8 @@ public class DeliveryCost {
         return id;
     }
 
-    public int getCodiceFornitore() {
-        return codiceFornitore;
+    public int getidSupplier() {
+        return idSupplier;
     }
 
     public int getNumeroMinimoArticoli() {

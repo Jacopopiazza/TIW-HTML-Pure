@@ -46,26 +46,26 @@ public class GetImage extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String codiceProdotto = request.getParameter("codiceProdotto");
+        String idProduct = request.getParameter("idProduct");
         int idProdotto;
         try{
-            idProdotto = Integer.parseInt(codiceProdotto);
+            idProdotto = Integer.parseInt(idProduct);
         } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad parameter in getting image");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad parameter");
             return;
         }
 
         ProductDAO productDAO = new ProductDAO(connection);
         String relativePath;
         try{
-            relativePath = productDAO.getFotoPathFromCodiceProdotto(idProdotto);
+            relativePath = productDAO.getFotoPathFromidProduct(idProdotto);
         }catch (SQLException ex){
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving Fotopath from DB");
             return;
         }
 
         if(relativePath == null){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving Fotopath from DB");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Invalid idProduct provided");
             return;
         }
 

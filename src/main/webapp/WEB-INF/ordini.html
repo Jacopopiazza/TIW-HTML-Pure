@@ -23,7 +23,7 @@
 
                         <div>
                             <h3 th:text="${'Codice ordine: ' + ordine.codice()}">Codice Ordine</h3>
-                            <p th:text="${'Fornitore: ' + supplierDAO.getSupplier(ordine.codiceFornitore()).nome}">Fornitore</p>
+                            <p th:text="${'Fornitore: ' + supplierDAO.getSupplier(ordine.idSupplier()).nome}">Fornitore</p>
                             <p th:if="${ordine.dataSpedizione() != null}" th:text="${'Data di spedizione: ' + ordine.dataSpedizione().toString()}">Data Spedizione</p>
                             <p th:if="${ordine.dataSpedizione() == null}" th:text="${'Ordine non ancora spedito.'}">Data Spedizione</p>
 
@@ -44,10 +44,10 @@
                                 </thead>
                                 <tbody>
                                     <tr th:each="prodotto : ${ordine.orderDetails()}">
-                                        <td th:text="${prodotto.codiceProdotto()}">Codice</td>
-                                        <td th:text="${productDAO.getProduct(prodotto.codiceProdotto()).nome()}">Nome</td>
+                                        <td th:text="${prodotto.idProduct()}">Codice</td>
+                                        <td th:text="${productDAO.getProduct(prodotto.idProduct()).nome()}">Nome</td>
                                         <td th:text="${prodotto.prezzoUnitario() / 100.00 + ' €'}">Prezzo</td>
-                                        <td th:text="${prodotto.quantita()}">Q.nta</td>
+                                        <td th:text="${prodotto.amount()}">Q.nta</td>
                                     </tr>
                                 </tbody>
                             </table>

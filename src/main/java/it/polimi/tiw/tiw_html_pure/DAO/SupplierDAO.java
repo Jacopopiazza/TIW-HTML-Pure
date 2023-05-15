@@ -1,7 +1,6 @@
 package it.polimi.tiw.tiw_html_pure.DAO;
 
 import it.polimi.tiw.tiw_html_pure.Bean.DeliveryCost;
-import it.polimi.tiw.tiw_html_pure.Bean.Product;
 import it.polimi.tiw.tiw_html_pure.Bean.Supplier;
 import it.polimi.tiw.tiw_html_pure.InvalidParameterException;
 
@@ -9,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +21,11 @@ public class SupplierDAO {
         this.connection = connection;
     }
 
-    public Supplier getSupplier(int codiceFornitore) throws SQLException {
+    public Supplier getSupplier(int idSupplier) throws SQLException {
         String query = "SELECT * FROM fornitore WHERE Codice=?";
 
         PreparedStatement statement = connection.prepareStatement(query);
-        statement.setInt(1,codiceFornitore);
+        statement.setInt(1,idSupplier);
         ResultSet resultSet = statement.executeQuery();
 
         if(!resultSet.isBeforeFirst()) return null;
@@ -48,13 +46,13 @@ public class SupplierDAO {
 
     }
 
-    public Map<Supplier, Integer> getSuppliersAndPricesForProduct(int codiceProdotto) throws SQLException {
+    public Map<Supplier, Integer> getSuppliersAndPricesForProduct(int idProduct) throws SQLException {
 
         String query = "SELECT F.*, Prezzo FROM prodottodafornitore pdf INNER JOIN fornitore F on pdf.CodiceFornitore=F.Codice WHERE CodiceProdotto=?";
         Map<Supplier, Integer> suppliers = new HashMap<>();
         PreparedStatement statement = connection.prepareStatement(query);
 
-        statement.setInt(1, codiceProdotto);
+        statement.setInt(1, idProduct);
 
         ResultSet resultSet = statement.executeQuery();
 
@@ -83,12 +81,12 @@ public class SupplierDAO {
 
     }
 
-    protected List<DeliveryCost> getDeliveryCostsForSupplier(int codiceFornitore) throws SQLException{
+    protected List<DeliveryCost> getDeliveryCostsForSupplier(int idSupplier) throws SQLException{
         String query = "SELECT * FROM fasciaspedizione WHERE CodiceFornitore=?";
         List<DeliveryCost> deliveryCosts = new ArrayList<>();
         PreparedStatement statement = connection.prepareStatement(query);
 
-        statement.setInt(1, codiceFornitore);
+        statement.setInt(1, idSupplier);
 
         ResultSet resultSet = statement.executeQuery();
 
@@ -115,10 +113,10 @@ public class SupplierDAO {
         return deliveryCosts;
     }
 
-    public Integer getDeliveryCostOfSupplierForNProducts(int codiceFornitore, int numeroArticoli) throws SQLException, InvalidParameterException{
+    public Integer getDeliveryCostOfSupplierForNProducts(int idSupplier, int numeroArticoli) throws SQLException, InvalidParameterException{
         String query = "SELECT PrezzoSpedizione FROM fasciaspedizione WHERE CodiceFornitore = ? AND NumeroMinimoArticoli <= ? AND (NumeroMassimoArticoli IS NULL OR NumeroMassimoArticoli >= ?);";
         PreparedStatement stmt = connection.prepareStatement(query);
-        stmt.setInt(1, codiceFornitore);
+        stmt.setInt(1, idSupplier);
         stmt.setInt(2, numeroArticoli);
         stmt.setInt(3, numeroArticoli);
 

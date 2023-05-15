@@ -2,7 +2,7 @@ package it.polimi.tiw.tiw_html_pure.Bean;
 
 import java.util.Objects;
 
-public record ProductBySupplier (int codiceProdotto, int codiceFornitore) {
+public record ProductBySupplier (int idProduct, int idSupplier) {
 
     @Override
     public boolean equals(Object obj) {
@@ -11,13 +11,13 @@ public record ProductBySupplier (int codiceProdotto, int codiceFornitore) {
         if ( obj == null || ( this.getClass() != obj.getClass() ) )
             return false;
         ProductBySupplier temp = (ProductBySupplier) obj;
-        return ( codiceFornitore == temp.codiceFornitore ) && ( codiceProdotto == temp.codiceProdotto );
+        return ( idSupplier == temp.idSupplier ) && ( idProduct == temp.idProduct );
 
     }
 
     @Override
     public int hashCode(){
-        return Objects.hash(codiceProdotto,codiceFornitore);
+        return Objects.hash(idProduct,idSupplier);
     }
 
 }

@@ -26,7 +26,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet(name ="Ordini", value = "/ordini")
+@WebServlet(name ="Ordini", value = "/orders")
 public class Orders extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
@@ -48,16 +48,6 @@ public class Orders extends HttpServlet {
         OrderDAO orderDAO = new OrderDAO(connection);
 
         User user = (User)session.getAttribute("user");
-        List<Product> menuProducts;
-        try {
-            menuProducts = new ProductDAO(connection).getLastFiveViewedProductsForUser( user.email() );
-        }catch (SQLException e){
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while retriving products for the menu");
-            return;
-        }
-
-        ctx.setVariable("products", menuProducts);
 
         List<Order> ordini;
 
@@ -91,22 +81,22 @@ public class Orders extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         //Check params
-        String sCodiceFornitore = request.getParameter("codiceFornitore");
+        String sidSupplier = request.getParameter("idSupplier");
 
-        if(sCodiceFornitore == null || sCodiceFornitore.isEmpty()){
+        if(sidSupplier == null || sidSupplier.isEmpty()){
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter");
             return;
         }
 
-        int codiceFornitore = -1;
+        int idSupplier = -1;
         try{
-            codiceFornitore = Integer.parseInt(sCodiceFornitore);
+            idSupplier = Integer.parseInt(sidSupplier);
         }catch (NumberFormatException ex){
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Inavlid parameter");
             return;
         }
 
-        if(codiceFornitore < 0){
+        if(idSupplier < 0){
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter");
             return;
         }
@@ -118,13 +108,13 @@ public class Orders extends HttpServlet {
         Map<Integer, Map<Integer, Integer>> cart = cartDAO.getCart();
 
         //Supplier is not in cart
-        if(!cart.containsKey(codiceFornitore)) {
+        if(!cart.containsKey(idSupplier)) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No products in cart for this supplier, cannot create an order.");
             return;
         }
 
-        Map<Integer,Integer> prodottiPerOrdine = cart.get(codiceFornitore);
-        int finalCodiceFornitore = codiceFornitore;
+        Map<Integer,Integer> prodottiPerOrdine = cart.get(idSupplier);
+        int finalidSupplier = idSupplier;
         int subTotale = -1;
         int articoliNelCarrello = prodottiPerOrdine.values().stream().reduce(0, Integer::sum);
         int speseSpedizione = 0;
@@ -139,7 +129,7 @@ public class Orders extends HttpServlet {
         try {
             subTotale =  prodottiPerOrdine.entrySet().stream().map(x -> {
                 try {
-                    return productDAO.getPriceForProductFromSupplier(x.getKey(), finalCodiceFornitore) * x.getValue();
+                    return productDAO.getPriceForProductFromSupplier(x.getKey(), finalidSupplier) * x.getValue();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -157,7 +147,7 @@ public class Orders extends HttpServlet {
 
         //Get supplier to calculate delivery costs
         try{
-            supplier = supplierDAO.getSupplier(codiceFornitore);
+            supplier = supplierDAO.getSupplier(idSupplier);
         }catch (SQLException ex){
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving supplier info." + ex.getMessage());
             return;
@@ -171,7 +161,7 @@ public class Orders extends HttpServlet {
         //get eventual delivery costs
         if(supplier.getSogliaSpedizioneGratuita() == null ||  subTotale < supplier.getSogliaSpedizioneGratuita()){
             try{
-                speseSpedizione = supplierDAO.getDeliveryCostOfSupplierForNProducts(codiceFornitore, articoliNelCarrello);
+                speseSpedizione = supplierDAO.getDeliveryCostOfSupplierForNProducts(idSupplier, articoliNelCarrello);
             }catch (SQLException ex){
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving delivery cost info." + ex.getMessage());
                 return;
@@ -186,15 +176,15 @@ public class Orders extends HttpServlet {
         User user = (User)request.getSession(false).getAttribute("user");
 
         try{
-            orderDAO.createOrder(user, codiceFornitore, speseSpedizione, subTotale, prodottiPerOrdine);
+            orderDAO.createOrder(user, idSupplier, speseSpedizione, subTotale, prodottiPerOrdine);
         }catch (SQLException ex){
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating the order\n." + ex.getMessage());
             return;
         }
 
-        cartDAO.removeProductOfSupplier(codiceFornitore);
+        cartDAO.removeProductOfSupplier(idSupplier);
 
-        String path = getServletContext().getContextPath() + "/ordini";
+        String path = getServletContext().getContextPath() + "/orders";
         response.sendRedirect(path);
 
 
