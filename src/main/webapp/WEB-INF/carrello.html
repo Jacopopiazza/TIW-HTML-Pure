@@ -44,7 +44,7 @@
                             <td th:text="${prodotto.nome()}"></td>
                             <td><img th:src="@{${'/image?idProduct=' + prodotto.codice}}"/></td>
                             <td th:text="${entryProdotto.getValue()}"></td>
-                            <td th:text="${#numbers.formatCurrency(productDAO.getPriceForProductFromSupplier(prodotto.codice,fornitore.codice) / 100.00)}"></td>
+                            <td th:text="${#numbers.formatDecimal(productDAO.getPriceForProductFromSupplier(prodotto.codice,fornitore.codice) / 100.00,1,'COMMA',2,'POINT') + ' €'}"></td>
 
                         </tr>
                     </tbody>
