@@ -18,11 +18,16 @@ import org.thymeleaf.web.IWebExchange;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet(name = "Home", value= "/home")
+@WebServlet(name = "Home", value= {"/home","/"})
 public class Home extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -50,6 +55,7 @@ public class Home extends HttpServlet {
      * @throws IOException if there is an I/O problem
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
         final IWebExchange webExchange = this.application.buildExchange(request, response);
         final WebContext ctx = new WebContext(webExchange, request.getLocale());
 
@@ -91,5 +97,7 @@ public class Home extends HttpServlet {
         } catch (SQLException ignored) {
         }
     }
+
+
 
 }
