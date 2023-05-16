@@ -79,7 +79,7 @@ public class Results extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter");
                     return;
                 }catch(SQLException ex){
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while retriving suppliers for open products" + ex.getMessage());
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while retriving suppliers for open products");
                     return;
                 }
         }
@@ -122,7 +122,7 @@ public class Results extends HttpServlet {
         try{
             this.templateEngine.process("risultati",ctx, response.getWriter());
         }catch (Exception e){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in rendering template.");
             return;
         }
     }

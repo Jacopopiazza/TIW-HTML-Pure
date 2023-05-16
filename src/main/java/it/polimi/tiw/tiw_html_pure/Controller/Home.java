@@ -75,7 +75,7 @@ public class Home extends HttpServlet {
         try{
             this.templateEngine.process("home",ctx, response.getWriter());
         }catch (Exception ex){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in rendering template");
         }
 
     }

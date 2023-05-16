@@ -70,7 +70,7 @@ public class Orders extends HttpServlet {
         try {
             ordini = orderDAO.getOrdersForUser(user.email());
         }catch (SQLException ex){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in fetching orders for logged user from db.\n" + ex.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in fetching orders for logged user from db.");
             return;
         }
 
@@ -88,7 +88,7 @@ public class Orders extends HttpServlet {
         try{
             this.templateEngine.process("ordini",ctx, response.getWriter());
         }catch (Exception ex){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in rendering order page." + ex.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in rendering order page.");
             return;
         }
 
@@ -164,7 +164,7 @@ public class Orders extends HttpServlet {
                 }
             }).reduce(0, Integer::sum);
         }catch (RuntimeException ex){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving prices." + ex.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving prices.");
             return;
         }
 
@@ -178,7 +178,7 @@ public class Orders extends HttpServlet {
         try{
             supplier = supplierDAO.getSupplier(idSupplier);
         }catch (SQLException ex){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving supplier info." + ex.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving supplier info.");
             return;
         }
 
@@ -192,10 +192,10 @@ public class Orders extends HttpServlet {
             try{
                 speseSpedizione = supplierDAO.getDeliveryCostOfSupplierForNProducts(idSupplier, articoliNelCarrello);
             }catch (SQLException ex){
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving delivery cost info." + ex.getMessage());
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving delivery cost info.");
                 return;
             }catch (InvalidParameterException ex){
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving delivery cost info. Some parameters to query where wrong." + ex.getMessage());
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in retriving delivery cost info. Some parameters to query where wrong.");
                 return;
             }
         }
@@ -207,7 +207,7 @@ public class Orders extends HttpServlet {
         try{
             orderDAO.createOrder(user, idSupplier, speseSpedizione, subTotale, prodottiPerOrdine);
         }catch (SQLException ex){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating the order\n." + ex.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating the order.");
             return;
         }
 
