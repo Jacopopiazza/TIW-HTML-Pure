@@ -67,7 +67,7 @@ public class ViewProduct extends HttpServlet {
                 }
             }
         } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad parameter in report creation");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad parameter in viewing product");
             return;
         }
 

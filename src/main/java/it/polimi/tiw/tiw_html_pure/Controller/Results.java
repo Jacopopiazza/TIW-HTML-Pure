@@ -91,7 +91,7 @@ public class Results extends HttpServlet {
         ProductDAO productDAO = new ProductDAO(connection);
 
         //Get results of search
-        Map<Product, Double> risultati;
+        Map<Product, Integer> risultati;
 
         try{
             risultati = productDAO.getProductsFromQueryString(queryString);

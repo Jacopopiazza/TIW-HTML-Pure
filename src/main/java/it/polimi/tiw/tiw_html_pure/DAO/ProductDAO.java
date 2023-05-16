@@ -134,9 +134,9 @@ public class ProductDAO {
         return lasts;
     }
 
-    public Map<Product, Double> getProductsFromQueryString(String queryString) throws SQLException{
+    public Map<Product, Integer> getProductsFromQueryString(String queryString) throws SQLException{
         String query = "SELECT P.*, Min(Prezzo) AS PrezzoMinimo FROM db_tiw.prodotto P INNER JOIN db_tiw.prodottodafornitore PDF on P.Codice=PDF.CodiceProdotto WHERE P.Nome LIKE ? OR P.Descrizione LIKE ? GROUP BY CodiceProdotto ORDER BY PrezzoMinimo;";
-        Map<Product, Double> prods = new HashMap<>();
+        Map<Product, Integer> prods = new HashMap<>();
         PreparedStatement statement = connection.prepareStatement(query);
 
         statement.setString(1, "%" + queryString + "%");
@@ -155,7 +155,7 @@ public class ProductDAO {
                     resultSet.getString("Foto"),
                     resultSet.getString("Categoria"));
 
-            prods.put(product, resultSet.getInt("PrezzoMinimo")/100.00);
+            prods.put(product, resultSet.getInt("PrezzoMinimo"));
         }
 
         return prods;

@@ -29,8 +29,8 @@
 
                             <p th:text="${'Indirizzo di spedizione: ' + ordine.via() + ' ' + ordine.civico() + ', ' + ordine.citta() + ' (' + ordine.provincia() + '), ' + ordine.CAP() + ', ' + ordine.stato()}">Indirizzo di consegna</p>
 
-                            <p th:text="${'Totale ordine: ' + ordine.totaleOrdine() / 100.00 + ' €'}">Totale ordine</p>
-                            <p th:text="${'Spese di spedizione: ' + ordine.speseSpedizione() / 100.00 + ' €'}">Spese di spedizione</p>
+                            <p th:text="${'Totale ordine: ' + #numbers.formatCurrency(ordine.totaleOrdine() / 100.00)}">Totale ordine</p>
+                            <p th:text="${'Spese di spedizione: ' + #numbers.formatCurrency(ordine.speseSpedizione() / 100.00)}">Spese di spedizione</p>
 
                             <h3>Prodotti</h3>
                             <table>
@@ -46,7 +46,7 @@
                                     <tr th:each="prodotto : ${ordine.orderDetails()}">
                                         <td th:text="${prodotto.idProduct()}">Codice</td>
                                         <td th:text="${productDAO.getProduct(prodotto.idProduct()).nome()}">Nome</td>
-                                        <td th:text="${prodotto.prezzoUnitario() / 100.00 + ' €'}">Prezzo</td>
+                                        <td th:text="${#numbers.formatCurrency(prodotto.prezzoUnitario() / 100.00)}">Prezzo</td>
                                         <td th:text="${prodotto.amount()}">Q.nta</td>
                                     </tr>
                                 </tbody>
