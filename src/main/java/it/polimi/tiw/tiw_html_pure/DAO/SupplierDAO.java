@@ -48,7 +48,7 @@ public class SupplierDAO {
 
     public Map<Supplier, Integer> getSuppliersAndPricesForProduct(int idProduct) throws SQLException {
 
-        String query = "SELECT F.*, Prezzo FROM prodottodafornitore pdf INNER JOIN fornitore F on pdf.CodiceFornitore=F.Codice WHERE CodiceProdotto=?";
+        String query = "SELECT F.*, Round((Prezzo*(1-Sconto))) as Prezzo FROM prodottodafornitore pdf INNER JOIN fornitore F on pdf.CodiceFornitore=F.Codice WHERE CodiceProdotto=?";
         Map<Supplier, Integer> suppliers = new HashMap<>();
         PreparedStatement statement = connection.prepareStatement(query);
 

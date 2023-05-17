@@ -135,7 +135,7 @@ public class ProductDAO {
     }
 
     public Map<Product, Integer> getProductsFromQueryString(String queryString) throws SQLException{
-        String query = "SELECT P.*, Min(Prezzo) AS PrezzoMinimo FROM db_tiw.prodotto P INNER JOIN db_tiw.prodottodafornitore PDF on P.Codice=PDF.CodiceProdotto WHERE P.Nome LIKE ? OR P.Descrizione LIKE ? GROUP BY CodiceProdotto ORDER BY PrezzoMinimo;";
+        String query = "SELECT P.*, Min(Round((Prezzo*(1-Sconto)))) AS PrezzoMinimo FROM db_tiw.prodotto P INNER JOIN db_tiw.prodottodafornitore PDF on P.Codice=PDF.CodiceProdotto WHERE P.Nome LIKE ? OR P.Descrizione LIKE ? GROUP BY CodiceProdotto ORDER BY PrezzoMinimo;";
         Map<Product, Integer> prods = new HashMap<>();
         PreparedStatement statement = connection.prepareStatement(query);
 
@@ -183,7 +183,7 @@ public class ProductDAO {
     }
 
     public int getPriceForProductFromSupplier(int idProduct, int idSupplier) throws SQLException{
-        String query = "SELECT * FROM prodottodafornitore WHERE CodiceProdotto=? AND CodiceFornitore=?";
+        String query = "SELECT CodiceProdotto,CodiceFornitore,Sconto, Round((Prezzo*(1-Sconto))) as Prezzo FROM prodottodafornitore WHERE CodiceProdotto=? AND CodiceFornitore=?";
         PreparedStatement statement = connection.prepareStatement(query);
 
         statement.setInt(1, idProduct);
