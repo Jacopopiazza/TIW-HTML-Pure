@@ -196,5 +196,19 @@ public class ProductDAO {
         return resultSet.getInt("Prezzo");
     }
 
+    public double getDiscountForProductFromSupplier(int idProduct, int idSupplier) throws SQLException{
+        String query = "SELECT Sconto FROM prodottodafornitore WHERE CodiceProdotto=? AND CodiceFornitore=?";
+        PreparedStatement statement = connection.prepareStatement(query);
+
+        statement.setInt(1, idProduct);
+        statement.setInt(2, idSupplier);
+
+        ResultSet resultSet = statement.executeQuery();
+
+        resultSet.next();
+
+        return resultSet.getDouble("Sconto");
+    }
+
 
 }

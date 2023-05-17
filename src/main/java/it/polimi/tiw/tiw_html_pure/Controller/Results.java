@@ -114,6 +114,7 @@ public class Results extends HttpServlet {
         CartDAO cartDAO = new CartDAO(request.getSession(false), this.connection);
 
         ctx.setVariable("cartDAO", cartDAO);
+        ctx.setVariable("productDAO", productDAO);
         ctx.setVariable("risultati", risultati);
         ctx.setVariable("prodottiAperti" , prodottiAperti);
         ctx.setVariable("queryString", queryString);
