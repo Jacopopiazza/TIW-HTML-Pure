@@ -94,7 +94,7 @@ public class ProductDAO {
     }
 
     private Queue<Product> getFiveRandomProducts(List<Product> notIn) throws SQLException{
-        String query = "SELECT * FROM prodotto P WHERE P.Categoria='Tech' AND P.Codice in (SELECT CodiceProdotto FROM prodottodafornitore) ";
+        String query = "SELECT * FROM prodotto P WHERE P.Categoria='Tech' AND P.Codice in (SELECT CodiceProdotto FROM prodottodafornitore WHERE Sconto > 0.00) ";
         if(!notIn.isEmpty()){
             query += " AND P.Codice NOT IN (";
                 for(int  i = 0; i < notIn.size();i++){

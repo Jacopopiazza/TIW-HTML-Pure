@@ -52,18 +52,18 @@ public class OrderDAO {
             }
             order = new Order(rs.getInt("Codice"), rs.getInt("CodiceFornitore"), rs.getInt("TotaleOrdine"), rs.getInt("SpeseSpedizione"),
                     rs.getString("Via"), rs.getString("Civico"), rs.getString("Citta"), rs.getString("Provincia"),
-                    rs.getString("CAP"),rs.getString("Stato"), rs.getString("EmailUtente"), date, orderDetails);
+                    rs.getString("CAP"),rs.getString("Stato"), rs.getString("EmailUtente"), date, orderDetails, rs.getString("NomeFornitore"));
             ordini.add(order);
         }
         return ordini;
     }
 
-    public void createOrder(User user,int idSupplier, int speseSpedizione, int totaleOrdine, Map<Integer, Integer> prodottiOrdine) throws SQLException {
+    public void createOrder(User user,int idSupplier, int speseSpedizione, int totaleOrdine, Map<Integer, Integer> prodottiOrdine, String nomeFornitore) throws SQLException {
 
         connection.setAutoCommit(false);
 
         try {
-            String query = "INSERT INTO ordine (CodiceFornitore, SpeseSpedizione, Via, Civico, CAP, Citta, Stato, Provincia, EmailUtente, TotaleOrdine) VALUES (?,?,?,?,?,?,?,?,?,?)";
+            String query = "INSERT INTO ordine (CodiceFornitore, SpeseSpedizione, Via, Civico, CAP, Citta, Stato, Provincia, EmailUtente, TotaleOrdine,NomeFornitore) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement stmt1 = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             stmt1.setInt(1, idSupplier);
             stmt1.setInt(2, speseSpedizione);
@@ -75,6 +75,7 @@ public class OrderDAO {
             stmt1.setString(8, user.provincia());
             stmt1.setString(9, user.email());
             stmt1.setInt(10, totaleOrdine);
+            stmt1.setString(11, nomeFornitore);
 
             int affectedRows1 = stmt1.executeUpdate();
             if (affectedRows1 == 0) {

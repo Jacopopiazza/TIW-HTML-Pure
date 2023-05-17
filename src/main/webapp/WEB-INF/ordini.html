@@ -23,7 +23,7 @@
 
                         <div>
                             <h3 th:text="${'Codice ordine: ' + ordine.codice()}">Codice Ordine</h3>
-                            <p th:text="${'Fornitore: ' + supplierDAO.getSupplier(ordine.idSupplier()).nome}">Fornitore</p>
+                            <p th:text="${'Fornitore: ' + ordine.nomeFornitore()}">Fornitore</p>
                             <p th:if="${ordine.dataSpedizione() != null}" th:text="${'Data di spedizione: ' + ordine.dataSpedizione().toString()}">Data Spedizione</p>
                             <p th:if="${ordine.dataSpedizione() == null}" th:text="${'Ordine non ancora spedito.'}">Data Spedizione</p>
 

@@ -205,7 +205,7 @@ public class Orders extends HttpServlet {
         User user = (User)request.getSession(false).getAttribute("user");
 
         try{
-            orderDAO.createOrder(user, idSupplier, speseSpedizione, subTotale, prodottiPerOrdine);
+            orderDAO.createOrder(user, idSupplier, speseSpedizione, subTotale, prodottiPerOrdine, supplier.getNome());
         }catch (SQLException ex){
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while creating the order.");
             return;
