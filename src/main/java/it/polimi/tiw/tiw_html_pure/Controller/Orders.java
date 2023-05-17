@@ -79,10 +79,7 @@ public class Orders extends HttpServlet {
             return;
         }
 
-
         ctx.setVariable("ordini", ordini);
-        ctx.setVariable("supplierDAO", new SupplierDAO(connection));
-        ctx.setVariable("productDAO", new ProductDAO(connection));
 
         response.setCharacterEncoding("UTF-8");
         try{

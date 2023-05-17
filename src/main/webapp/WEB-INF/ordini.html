@@ -36,7 +36,6 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Codice Prodotto</th>
                                         <th>Nome Prodotto</th>
                                         <th>Prezzo Unitario</th>
                                         <th>Quantita Ordinata</th>
@@ -44,8 +43,7 @@
                                 </thead>
                                 <tbody>
                                     <tr th:each="prodotto : ${ordine.orderDetails()}">
-                                        <td th:text="${prodotto.idProduct()}">Codice</td>
-                                        <td th:text="${productDAO.getProduct(prodotto.idProduct()).nome()}">Nome</td>
+                                        <td th:text="${prodotto.nomeProdotto()}">Nome</td>
                                         <td th:text="${#numbers.formatDecimal(prodotto.prezzoUnitario() / 100.00,1,'COMMA',2,'POINT') + ' €'}">Prezzo</td>
                                         <td th:text="${prodotto.amount()}">Q.nta</td>
                                     </tr>
