@@ -19,7 +19,7 @@
             <h2 th:if="${!risultati.isEmpty()}">Risultati ricerca:</h2>
             <div class="risultati">
                 <ul class="listview">
-                    <li class="listview-row" th:if="${!risultati.isEmpty()}" th:each=" risultato : ${risultati.keySet()}">
+                    <li class="listview-row" th:if="${!risultati.isEmpty()}" th:each=" risultato : ${sortedResults}">
                         <form th:action="@{${prodottiAperti.keySet().contains(risultato.codice) ? '/results' : '/viewProduct'}}" th:method="${prodottiAperti.keySet().contains(risultato.codice) ? 'GET' : 'POST'}">
                             <input type="hidden" name="queryString" th:value="${queryString}" />
                             <input th:each=" codice : ${prodottiAperti.keySet()}" th:if="${!codice.equals(risultato.codice)}" type="hidden" name="aperto" th:value="${codice}"/>

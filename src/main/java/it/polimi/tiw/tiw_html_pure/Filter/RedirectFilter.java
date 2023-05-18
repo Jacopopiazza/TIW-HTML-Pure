@@ -41,6 +41,19 @@ public class RedirectFilter implements Filter {
             }
             return;
         }
+        else if(pathInfo == "/img/favicon.png"){
+            response.setContentType("image/png");
+            ((HttpServletResponse)response).setHeader("Content-Disposition", "inline; filename=favicon.png");
+            try (InputStream in = Files.newInputStream(getFilePath("/img/favicon.png"));
+                 OutputStream out = response.getOutputStream()) {
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
+                }
+            }
+            return;
+        }
         else{
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.sendRedirect(((HttpServletRequest) request).getContextPath() + "/home");

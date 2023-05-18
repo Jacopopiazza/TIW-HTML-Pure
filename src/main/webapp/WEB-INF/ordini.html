@@ -29,7 +29,7 @@
 
                             <p th:text="${'Indirizzo di spedizione: ' + ordine.via() + ' ' + ordine.civico() + ', ' + ordine.citta() + ' (' + ordine.provincia() + '), ' + ordine.CAP() + ', ' + ordine.stato()}">Indirizzo di consegna</p>
 
-                            <p th:text="${'Totale ordine: ' + #numbers.formatDecimal(ordine.totaleOrdine() / 100.00,1,'COMMA',2,'POINT') + ' €'}">Totale ordine</p>
+                            <p th:text="${'Totale ordine: ' + #numbers.formatDecimal((ordine.speseSpedizione() + ordine.totaleOrdine()) / 100.00,1,'COMMA',2,'POINT') + ' €'}">Totale ordine</p>
                             <p th:text="${'Spese di spedizione: ' + #numbers.formatDecimal(ordine.speseSpedizione() / 100.00,1,'COMMA',2,'POINT') + ' €'}">Spese di spedizione</p>
 
                             <h3>Prodotti</h3>

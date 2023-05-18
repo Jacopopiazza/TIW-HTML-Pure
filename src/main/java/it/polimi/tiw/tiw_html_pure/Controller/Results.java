@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @WebServlet(name ="Risultati", value = "/results")
 public class Results extends HttpServlet {
@@ -110,20 +111,25 @@ public class Results extends HttpServlet {
             return;
         }
 
+        List<Product> sortedResults = risultati.entrySet().stream().sorted((x,y) -> x.getValue().compareTo(y.getValue())).map(x -> x.getKey()).toList();
+
         //
         CartDAO cartDAO = new CartDAO(request.getSession(false), this.connection);
 
         ctx.setVariable("cartDAO", cartDAO);
         ctx.setVariable("productDAO", productDAO);
         ctx.setVariable("risultati", risultati);
+        ctx.setVariable("sortedResults", sortedResults);
         ctx.setVariable("prodottiAperti" , prodottiAperti);
         ctx.setVariable("queryString", queryString);
+
+
 
         response.setCharacterEncoding("UTF-8");
         try{
             this.templateEngine.process("risultati",ctx, response.getWriter());
         }catch (Exception e){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in rendering template.");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error in rendering template." + e.getMessage());
             return;
         }
     }
