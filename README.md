@@ -1,9 +1,9 @@
 # Progetto di Tecnologie informatiche per il Web A.A. 2022/23
-# Versione HTML Pure - JavaEE + Thymeleaf
+### Versione HTML Pure - JavaEE + Thymeleaf
 
 Voto 30/30
 
-# Traccia N.5: Carrello con più fornitori e ordine
+### Traccia N.5: Carrello con più fornitori e ordine
 Un’applicazione di commercio elettronico consente all’utente (acquirente) di visualizzare un catalogo di prodotti
 venduti da diversi fornitori, inserire prodotti in un carrello della spesa e creare un ordine di acquisto a partire dal
 contenuto del carrello. Un prodotto ha un codice (campo chiave), un nome, una descrizione, una categoria
